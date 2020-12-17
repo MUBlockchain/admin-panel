@@ -101,16 +101,24 @@
     text-align: center;
 }
 
-.user-info {
-    display: flex;
-    align-items: center;
-    justify-content: space-evenly;
-}
-
 .user-info > img {
     width: 50px;
     height: 50px;
     border-radius: 50%;
+    padding: 0px;
+    margin: 0px;
+    margin-top: 2px;
+    border: 2px solid #fff;
+}
+
+.user-info > img:hover {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    padding: 0px;
+    margin: 0px;
+    margin-top: 2px;
+    border: 2px solid #8a060a;
 }
 
 .chain-values {
@@ -150,7 +158,7 @@
     background-color: #111;
     color: #111;
     padding-left: 30px;
-    padding-right: 30px;
+    padding-right: 5px;
 }
 
 .navigation-links {
@@ -170,8 +178,6 @@
 
 .navigation-user-info {
     display: inline-block;
-    margin: 10px;
+    margin: 2px 0px 2px 2px;
     margin-left: auto;
-    padding: 10px;
-    background-color: #fff;
 }

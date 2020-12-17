@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { UserContext } from './auth'
 import { AffiliateContext } from './affiliate'
 import CircularProgress from '@material-ui/core/CircularProgress'
-import Login from './login'
+import UserProfile from './UserProfile'
 import { useContract } from './hooks'
 import '../components/app.css'
 
@@ -57,15 +57,13 @@ const IndexBody = () => {
 
     return (
         <div className="IndexBody">
-            <h1>Torus DirectAuth Implementation</h1>
             {loading && <CircularProgress color={'primary'} />}
+            <div style={{padding: "10px", margin: "5px"}}>
+                <UserProfile />
+            </div>
             {user ?
                 <div>
                     <div>
-                        <div className="user-info">
-                            <h3>Name: {user.name}</h3>
-                            <img src={user.profileImage} alt="Profile photo" />
-                        </div>
                         <p>Ethereum Address: {user.publicAddress}</p>
                     </div>
                     {contract &&
@@ -81,8 +79,10 @@ const IndexBody = () => {
                             </div>
                             <p>Value = {val}</p>
                         </div>
-                    }</div> : !loading && <h2>Please Log In To Use</h2>}
-                    <Login />
+                    }
+                </div>
+                : !loading && <h3 style={{ "margin-top": "25px"}}>Log in to continue</h3> 
+            }
         </div>
     )
 }

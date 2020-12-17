@@ -2,6 +2,7 @@ import React, { useContext } from "react"
 import { UserContext } from "./auth"
 import { AffiliateContext } from "./affiliate"
 import { Link } from "gatsby"
+import UserProfile from './UserProfile'
 
 const Navigation = () => {
 
@@ -33,7 +34,7 @@ const Navigation = () => {
                         Announcements
                     </Link>
                     <div className="navigation-user-info">
-                        User info goes here
+                        <UserProfile />
                     </div>
                 </div>
             </div>
