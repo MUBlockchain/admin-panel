@@ -165,11 +165,7 @@
     background-color: #fff;
     text-decoration: none;
     color: inherit;
-}
-
-.navigation-links .navigation-link-active {
-    background-color: #c70000;
-    color: #fff;
+    transition: .3s;
 }
 
 .navigation-user-info {

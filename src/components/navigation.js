@@ -1,33 +1,39 @@
 import React, { useContext } from "react"
 import { UserContext } from "./auth"
+import { AffiliateContext } from "./affiliate"
 import { Link } from "gatsby"
 
 const Navigation = () => {
 
     const { user, loading } = useContext(UserContext)
-    console.log(user)
+    const { affiliateColor, setAffiliateColor } = useContext(AffiliateContext)
+
+    const activeLinkStyle = {
+        color: "#fff",
+        backgroundColor: affiliateColor
+    }
 
     return (
         user ?
             <div className="navigation-container">
                 <div className="navigation-links">
-                    <Link to="/" activeClassName="navigation-link-active">
+                    <Link to="/" activeStyle={activeLinkStyle}>
                         Home
                     </Link>
-                    <Link to="/users" activeClassName="navigation-link-active">
+                    <Link to="/users" activeStyle={activeLinkStyle}>
                         Users
                     </Link>
-                    <Link to="/items" activeClassName="navigation-link-active">
+                    <Link to="/items" activeStyle={activeLinkStyle}>
                         Items
                     </Link>
-                    <Link to="/bounties" activeClassName="navigation-link-active">
+                    <Link to="/bounties" activeStyle={activeLinkStyle}>
                         Bounties
                     </Link>
-                    <Link to="/announcements" activeClassName="navigation-link-active">
+                    <Link to="/announcements" activeStyle={activeLinkStyle}>
                         Announcements
                     </Link>
                     <div className="navigation-user-info">
-                        user info goes here
+                        User info goes here
                     </div>
                 </div>
             </div>
