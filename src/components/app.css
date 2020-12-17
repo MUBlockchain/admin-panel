@@ -1,0 +1,144 @@
+/* MUBC Header */
+
+#mubc-header {
+    background-color: white;
+    text-align: center;
+    padding-bottom: 10px;
+}
+
+#mubc-header__contributors {
+    width: 70%;
+    margin: 0 auto;
+    display: flex;
+    align-content: center;
+    justify-content: space-around;
+    padding-top: 24px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+.mubc-header__contributor-background {
+    width: 210px;
+    height: 140px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: -100px;
+    background-color: black;
+    opacity: .5;
+    border-radius: 20px;
+    z-index: 99;
+    position: relative;
+} 
+
+.mubc-header__torus-contributor {
+    z-index: 999;
+    margin: 0 auto;
+    position: relative;
+    cursor: pointer;
+}
+
+.mubc-logo-top {
+    margin-top: -30px;
+    transition: 0.3s;
+    width: 130px;
+    height: 95px;
+}
+.mubc-logo-bottom {
+    margin-top: -45px;
+    transition: 0.3s;
+    width: 120px;
+    height: 25px;
+}
+
+.mubc-header__contributor-image {
+    width: 160px;
+}
+
+.mbc-image {
+    margin-top: -15px;
+    padding-bottom: 25px;
+}
+
+.torus-image {
+    padding-top: 15px;
+}
+
+
+.mubc-header__torus-contributor:hover {
+    filter: blur(3px);
+    -webkit-filter: blur(3px);
+}
+
+.mubc-header__background {
+    margin-top: -160px;
+    z-index: 3 ;
+}
+
+/* Login */
+.Login {
+    margin-top: 40px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.button {
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 33px;
+    transition: .3s;
+    cursor: pointer;
+    outline: none;
+}
+
+.button:hover {
+    opacity: .6;
+}
+
+/* Index Body */
+
+.IndexBody {
+    text-align: center;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.user-info > img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
+.chain-values {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    width: 60%;
+    margin: 0 auto;
+}
+
+.chain-values > div > form > input{
+    margin-left: 20px;
+    border: none;
+    outline: none;
+    background-color: lightgray;
+    padding: 6px;
+    border-radius: 999px;
+}
+
+/* Layout */
+.Layout {
+    text-align: center;
+}
+
+/* Footer */
+.Footer {
+    bottom: 0;
+    width: 100%;
+    height: 2.5rem;
+    position: absolute;
+}
