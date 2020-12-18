@@ -1,0 +1,60 @@
+/* The container <div> - needed to position the dropdown content */
+  .dropdown {
+    position: relative;
+    display: inline;
+    font-size: 14px;
+  }
+
+  .dropdown span {
+    color: white;
+    padding: 10px;
+    margin-right: 30px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  /* Dropdown Content (Hidden by Default) */
+  .dropdown-content {
+    right: 0;
+    display: none;
+    position: absolute;
+    padding: 0px;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+  }
+  
+  /* Inside the dropdown */
+  .dropdown-content div {
+    color: black;
+    padding: 5px 5px;
+    text-decoration: none;
+    display: block;
+  }
+  
+  .dropdown-content div:hover {
+      background-color: #f1f1f1;
+      cursor: default;
+    }
+  
+  /* Show the dropdown menu on hover */
+  .dropdown:hover .dropdown-content {
+    display: block;
+    transition: 2s;
+  }
+
+  .loginBtn {
+    display: inline;
+    background-color: #780004;
+    color: white;
+    padding: 10px;
+  }
+
+  .loginBtn:hover {
+    background-color: black;
+    color: white;
+    padding: 10px;
+    cursor: pointer;
+  }
+  

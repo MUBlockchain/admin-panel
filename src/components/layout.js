@@ -8,10 +8,10 @@
 import React from "react"
 import PropTypes from "prop-types"
 import { useStaticQuery, graphql } from "gatsby"
-import Header from "./header"
 import "./layout.css"
 import MUBCHeader from "./MUBCHeader"
 import '../components/app.css'
+import Navigation from "./navigation"
 
 const Layout = ({ children }) => {
   const data = useStaticQuery(graphql`
@@ -28,6 +28,7 @@ const Layout = ({ children }) => {
     <>
       <MUBCHeader />
       <div className="Layout">
+        <Navigation />
         <main>{children}</main>
         <footer className="Footer">
           © {new Date().getFullYear()}, Built by Ian Brighton
