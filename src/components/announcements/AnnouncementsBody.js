@@ -4,6 +4,7 @@ import { Tabs, Tab } from 'react-bootstrap'
 import './announcementsBody.css'
 import AnnouncementUtils from './AnnouncementUtils'
 import AnnouncementList from './AnnouncementList'
+import AnnouncementEdit from './AnnouncementEdit'
 
 const AnnouncementsBody = () => {
     const { user, loading, login } = useContext(UserContext)
@@ -44,7 +45,8 @@ const AnnouncementsBody = () => {
                             </div>
                         </Tab>
                         <Tab eventKey="editor" title="Editor">
-                            <div style={{"margin": "20px"}}>
+                            <div className="announcement-form">
+                                <AnnouncementEdit />
                             </div>
                         </Tab>
                     </Tabs>

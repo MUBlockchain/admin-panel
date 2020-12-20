@@ -26,12 +26,19 @@
     font-weight: bold;
 }
 
-.announcement-item .datePosted {
+.datePosted {
     padding: 5px;
     color: gray;
     font-size: small;
     font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
+
+.announcement-form {
+    margin: 20px 80px 20px 80px;
+    text-align: left;
+    font-size: medium;
+}
+
 .dropdown-item {
     background-color: rgb(255, 253, 250);
 }
@@ -43,4 +50,32 @@
     font-size: small;
 }
 
+.form-control {
+    font-size: medium;
+}
 
+label.form-label {
+    font-weight: bold;
+}
+
+h5 {
+    font-weight: bold;
+    font-size: large;
+    color: #c70000;
+    text-align: center;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+.modal-content {
+    font-size: medium;
+}
+
+.modal-title {
+    font-weight: bold;
+    font-size: large;
+}
+
+.modal-footer {
+    margin: 0%;
+    padding: 5px;
+}

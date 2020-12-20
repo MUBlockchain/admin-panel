@@ -1,10 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Row, Col, DropdownButton, Dropdown } from 'react-bootstrap'
 import { Search, NavigateNext, NavigateBefore, FilterListSharp } from '@material-ui/icons';
-import { Paper, IconButton, InputBase, 
-    Grid, Tooltip, FormControlLabel, FormGroup,
-    Checkbox } from '@material-ui/core';
-import './announcementsBody.css'
+import { Paper, IconButton, InputBase,
+    Grid, Tooltip, Checkbox } from '@material-ui/core';
 
 
 const AnnouncementUtils = () => {
@@ -22,7 +20,7 @@ const AnnouncementUtils = () => {
                             <InputBase
                                 placeholder="Search by title..."
                                 inputProps={{ 'aria-label': 'search by title' }}
-                                style={{ "fontSize": "15px", "fontFamily": "georgia, serif" }} />
+                                style={{ "fontSize": "15px", "fontFamily": "georgia, serif", "width": "95%" }} />
                         </Col>
                         <Col sm={1}>
                             <Tooltip title="Search" placement="top">
@@ -38,18 +36,20 @@ const AnnouncementUtils = () => {
                 </Paper>
             </Col>
             <Col sm={1} style={{"paddingLeft":"0px"}}>
-                <DropdownButton
-                    eventKey={3}
-                    title={<FilterListSharp style={{"fontSize": "20px"}}/>}
-                    variant="secondary"
-                    size="sm"
-                    style={{ "margin": "0px", "padding": "0px"}}
-                >
-                    <Dropdown.Item >
-                       <Checkbox size="small" checked={showPinned} onClick={handleChange}></Checkbox>
-                       <span>Show pinned announcements</span>
-                    </Dropdown.Item>
-                </DropdownButton>
+                <Tooltip title="Filter" placement="top">
+                    <DropdownButton
+                        eventKey={3}
+                        title={<FilterListSharp style={{"fontSize": "20px"}}/>}
+                        variant="secondary"
+                        size="sm"
+                        style={{ "margin": "0px", "padding": "0px"}}
+                    >
+                        <Dropdown.Item >
+                        <Checkbox size="small" checked={showPinned} onClick={handleChange}></Checkbox>
+                        <span>Show pinned announcements</span>
+                        </Dropdown.Item>
+                    </DropdownButton>
+                </Tooltip>
             </Col>
             <Col sm={2}>
                 <Grid>
