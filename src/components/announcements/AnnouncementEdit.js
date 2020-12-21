@@ -10,11 +10,14 @@ const AnnouncementEdit = (props) => {
                 <h5 >New Announcement</h5>
                 <Form.Group controlId="announcementForm.announcementTitle">
                     <Form.Label>Announcement Title</Form.Label>
-                    <Form.Control type="text" placeholder="Announcement title"/>
+                    <Form.Control type="text" placeholder="Announcement title" required/>
                 </Form.Group>
                 <Form.Group controlId="announcementForm.announcementDesc">
                     <Form.Label>Announcement Description</Form.Label>
                     <Form.Control as="textarea" rows={3} placeholder="Announcement description"/>
+                </Form.Group>
+                <Form.Group controlId="annoucementForm.pin">
+                    <Form.Check type="checkbox" label="Pin announcement" />
                 </Form.Group>
                 <div style={{'textAlign': 'right'}}>
                     <Button variant="danger" 
