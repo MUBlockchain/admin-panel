@@ -43,18 +43,3 @@
     display: block;
     transition: 2s;
   }
-
-  .loginBtn {
-    display: inline;
-    background-color: #780004;
-    color: white;
-    padding: 10px;
-  }
-
-  .loginBtn:hover {
-    background-color: black;
-    color: white;
-    padding: 10px;
-    cursor: pointer;
-  }
-  

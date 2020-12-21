@@ -9,7 +9,7 @@ import '../components/app.css'
 const IndexBody = () => {
     const [val, setVal] = useState()
     const [txLoading, setTxLoading] = useState(false)
-    const { user, loading } = useContext(UserContext)
+    const { user, loading, login } = useContext(UserContext)
     const { affiliateColor } = useContext(AffiliateContext)
     const contract = useContract()
 
@@ -81,7 +81,9 @@ const IndexBody = () => {
                         </div>
                     }
                 </div>
-                : !loading && <h3 style={{ "margin-top": "25px"}}>Log in to continue</h3> 
+                : !loading && 
+                    <><h3 style={{ "margin-top": "25px"}}>Log in to continue</h3> 
+                    <div onClick={login} className="loginBtn">Log in</div></>
             }
         </div>
     )
