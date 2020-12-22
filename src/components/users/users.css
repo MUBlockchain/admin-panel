@@ -1,0 +1,22 @@
+.users-display-area {
+    display: flex;
+}
+
+.user-card {
+    display: inline;
+    margin: 8px;
+    padding: 8px;
+}
+
+.user-image {
+    display: block;
+    width: 96px;
+    height: 96px;
+    margin-bottom: 3px;
+    border-radius: 3px;
+}
+
+.user-display-name {
+    display: block;
+    max-width: 96
+}
