@@ -37,7 +37,7 @@ const ItemsBody = () => {
     }
 
     return (
-        <div>
+        <div style={{"padding": "10px"}}>
             {user ?
                 <div style={{"fontSize" : "15px"}}>
                     <Tabs activeKey={key} onSelect={k => setKey(k)}>
