@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react'
 import { UserContext } from '../auth'
 import { Tabs, Tab } from 'react-bootstrap'
 import ItemCreate from './ItemCreate'
+import ItemList from './ItemList'
 
 const ItemsBody = () => {
     const { user, loading, login } = useContext(UserContext)
@@ -11,22 +12,25 @@ const ItemsBody = () => {
         cost: 100,
         isInfinite: false,
         quantity: 5,
-        description: "All expenses paid trip to Blockchain Conference.",
-        isActive: true
+        description: "All expenses paid trip to regional Blockchain Conference.",
+        isActive: true,
+        id: 0
     },
     {
-        name: "Meet with The Pope",
-        imageURL: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.Xunt9y_K6FXbF6Lr3H8qjQHaHZ%26pid%3DApi&f=1",
+        name: "Meet with Professional",
+        imageURL: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fpreview.free3d.com%2Fimg%2F2014%2F05%2F1688666439835190495%2F9vdaf5x3-900.jpg&f=1&nofb=1",
         cost: 10,
         isInfinite: true,
         quantity: -1,
         description: "As said by the name.",
-        isActive: false
+        isActive: false,
+        id: 1
     }])
 
     const [ key, setKey ] = useState("active")
 
     const registerItem = item => {
+        item.id = itemList.length
         const tempList = itemList.concat([item])
         setItemList(tempList)
 
@@ -43,12 +47,12 @@ const ItemsBody = () => {
                     <Tabs activeKey={key} onSelect={k => setKey(k)}>
                         <Tab eventKey="active" title="Active">
                             <div style={{"margin": "20px"}}>
-                                Active Items
+                                <ItemList items={itemList.filter(i => i.isActive)} />
                             </div>
                         </Tab>
                         <Tab eventKey="inactive" title="Inactive">
                             <div style={{"margin": "20px"}}>
-                                Inactive Items
+                                <ItemList items={itemList.filter(i => !i.isActive)} />
                             </div>
                         </Tab>
                         <Tab eventKey="create" title="Create">
