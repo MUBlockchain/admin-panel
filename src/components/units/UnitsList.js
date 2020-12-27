@@ -59,9 +59,9 @@ const UnitsList = (props) => {
     const displayList = listToDisplay.map((_, i) => 
             {   
                 return i % 4 == 0 && 
-                <Row className="unitRow">
-                    {listToDisplay.slice(i, i + 4 < listToDisplay.length ? i + 4 : listToDisplay.length).map((unit) => (
-                        <Col md={3}><Unit data={unit} type={props.unitType || 'bounty'} /></Col>
+                <Row key={i} className="unitRow">
+                    {listToDisplay.slice(i, i + 4 < listToDisplay.length ? i + 4 : listToDisplay.length).map((unit, i) => (
+                        <Col key={i} md={3}><Unit data={unit} type={props.unitType || 'bounty'} /></Col>
                     ))}
                 </Row>
             }
