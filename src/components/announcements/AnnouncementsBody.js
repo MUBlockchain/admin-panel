@@ -5,8 +5,10 @@ import './announcementsBody.css'
 import AnnouncementUtils from './AnnouncementUtils'
 import AnnouncementList from './AnnouncementList'
 import AnnouncementEdit from './AnnouncementEdit'
+import { useContract } from '../hooks'
 
 const AnnouncementsBody = () => {
+    const contract = useContract()
     const { user, loading, login } = useContext(UserContext)
     const [ announcementList, setAnnouncementList ] = useState([{
         title : "Test Announcement 1",
@@ -32,6 +34,16 @@ const AnnouncementsBody = () => {
         datePosted: "2020-12-10",
         isPinned: false
     }])
+
+    const getAnnouncements = async () => {
+        if (!contract) return
+        const tx = await contract.getAnnouncements();
+        console.log(tx);
+    }
+    useEffect(
+        () => {
+            getAnnouncements();
+        }, [contract])
 
     return (
         <div>

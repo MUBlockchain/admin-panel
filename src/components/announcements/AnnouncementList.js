@@ -18,7 +18,7 @@ const AnnouncementItem = (props) => {
             <Paper style={{ "backgroundColor": "whitesmoke" }} className="announcement-item">
                 <Row>
                     <Col sm={1}>
-                    {isPinned && <div style={{'textAlign': 'left', 'margin-left': '15px'}}><AiFillPushpin style={{'color': 'red'}}/></div>}
+                    {isPinned && <div style={{'textAlign': 'left', 'marginLeft': '15px'}}><AiFillPushpin style={{'color': 'red'}}/></div>}
                     </Col>
                     <Col sm={11}>
                         <div>
@@ -66,8 +66,8 @@ const AnnouncementItem = (props) => {
 }
 
 const AnnouncementList = (props) => {
-    const displayAnnouncement = props.announcementList.map((announcement) =>
-        <AnnouncementItem announcement={announcement} />)
+    const displayAnnouncement = props.announcementList?.map((announcement, index) =>
+        <AnnouncementItem key={index} announcement={announcement} />)
 
     return (
         <>{displayAnnouncement}</>

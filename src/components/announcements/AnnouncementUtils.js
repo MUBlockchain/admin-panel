@@ -38,7 +38,6 @@ const AnnouncementUtils = () => {
             <Col sm={1} style={{"paddingLeft":"0px"}}>
                 <Tooltip title="Filter" placement="top">
                     <DropdownButton
-                        eventKey={3}
                         title={<FilterListSharp style={{"fontSize": "20px"}}/>}
                         variant="secondary"
                         size="sm"
