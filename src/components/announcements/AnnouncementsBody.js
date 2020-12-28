@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { UserContext } from '../auth'
 import { Tabs, Tab } from 'react-bootstrap'
+import CircularProgress from '@material-ui/core/CircularProgress'
 import './announcementsBody.css'
 import AnnouncementUtils from './AnnouncementUtils'
 import AnnouncementList from './AnnouncementList'
@@ -51,8 +52,9 @@ const AnnouncementsBody = () => {
                         </Tab>
                     </Tabs>
                 </div>
-                : !loading && 
-                    <><h3 style={{ "marginTop": "25px"}}>Log in to continue</h3> 
+                : loading 
+                    ? <CircularProgress color={'primary'} />
+                    : <><h3 style={{ "marginTop": "25px"}}>Log in to continue</h3> 
                     <div onClick={login} className="loginBtn">Log in</div></>
             }
         </div>
