@@ -1,0 +1,14 @@
+.unitRow {
+    margin: 10px;
+    padding: 10px;
+}
+
+.unitTitle {
+    font-size: medium;
+    font-weight: bold;
+    padding: 0px;
+}
+
+.col {
+    padding: 8px;
+}

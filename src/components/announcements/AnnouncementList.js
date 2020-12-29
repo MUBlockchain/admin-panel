@@ -23,9 +23,9 @@ const AnnouncementItem = (props) => {
                     <Col sm={11}>
                         <div>
                             <div className="title">
-                                {props.announcement.title}
+                                {props.announcement?.title}
                             </div>
-                            <div className="datePosted">Posted on: {props.announcement.datePosted}</div>
+                            <div className="datePosted">Posted on: {props.announcement?.datePosted}</div>
                         </div>
                         
                     </Col>
@@ -41,7 +41,7 @@ const AnnouncementItem = (props) => {
                 centered
             >
                 <Modal.Header closeButton>
-                    <Modal.Title>{props.announcement.title}</Modal.Title>
+                    <Modal.Title>{props.announcement?.title}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body style={{'margin': '0px 10px 0px 10px'}}>
                     <Row>
@@ -54,11 +54,11 @@ const AnnouncementItem = (props) => {
                                 </IconButton>
                             </Row>
                         </Col>
-                        <Col sm={10}>{props.announcement.content}</Col>
+                        <Col sm={10}>{props.announcement?.content}</Col>
                     </Row>
                 </Modal.Body>
                 <Modal.Footer>
-                    <span className='datePosted'>Posted on: {props.announcement.datePosted}</span>
+                    <span className='datePosted'>Posted on: {props.announcement?.datePosted}</span>
                 </Modal.Footer>
             </Modal>
         </>
