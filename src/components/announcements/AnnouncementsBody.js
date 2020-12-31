@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { UserContext } from '../auth'
 import { Tabs, Tab } from 'react-bootstrap'
 import CircularProgress from '@material-ui/core/CircularProgress'

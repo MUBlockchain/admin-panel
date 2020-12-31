@@ -3,6 +3,8 @@ import { UserContext } from '../auth'
 import { Tabs, Tab } from 'react-bootstrap'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import UnitsList from '../units/UnitsList'
+import BountiesPending from './BountiesPending'
+import './bounties.css'
 
 const BountiesBody = () => {
     const { user, loading, login } = useContext(UserContext)
@@ -107,9 +109,7 @@ const BountiesBody = () => {
                             </div>
                         </Tab>
                         <Tab eventKey="pending" title="Pending">
-                            <div className="bounties-req">
-                                
-                            </div>
+                            <BountiesPending />
                         </Tab>
                     </Tabs>
                 </div>
