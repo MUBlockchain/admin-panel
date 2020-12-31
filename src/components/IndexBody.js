@@ -22,7 +22,7 @@ const IndexBody = () => {
                     </div>
                 </div>
                 : !loading && 
-                    <><h3 style={{ "margin-top": "25px"}}>Log in to continue</h3> 
+                    <><h3 style={{ "marginTop": "25px"}}>Log in to continue</h3> 
                     <div onClick={login} className="loginBtn">Log in</div></>
             }
         </div>
