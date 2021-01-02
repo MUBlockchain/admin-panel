@@ -58,7 +58,15 @@ export default function UserContextProvider({ children }) {
 
     // Set new user from data retrived from local storage
     setUser({ publicAddress, privateKey, name, profileImage })
-    const provider = Ethers.getDefaultProvider(process.env.GATSBY_NETWORK)
+    let provider = Ethers.getDefaultProvider(process.env.GATSBY_NETWORK)
+    if (process.env.ALCHEMY_API_KEY && process.env.INFURA_API_KEY && process.env.ETHERSCAN_API_KEY) {
+      console.log('Api keys provided');
+      provider = Ethers.getDefaultProvider(process.env.GATSBY_NETWORK, {
+        alchemy: process.env.ALCHEMY_API_KEY,
+        infura: process.env.INFURA_API_KEY, 
+        etherscan: process.env.ETHERSCAN_API_KEY
+      })
+    }
 
     // Create a new ethers wallet instance from data retrived from local storage
     const wallet = new Ethers.Wallet(`0x${privateKey}`, provider)
@@ -96,7 +104,14 @@ export default function UserContextProvider({ children }) {
         const { publicAddress, privateKey, userInfo: info } = userInfo
         const { name, profileImage } = info
         setUser({ publicAddress, privateKey, name, profileImage })
-        const provider = Ethers.getDefaultProvider(process.env.GATSBY_NETWORK)
+        let provider = Ethers.getDefaultProvider(process.env.GATSBY_NETWORK)
+        if (process.env.ALCHEMY_API_KEY && process.env.INFURA_API_KEY && process.env.ETHERSCAN_API_KEY) {
+          provider = Ethers.getDefaultProvider(process.env.GATSBY_NETWORK, {
+            alchemy: process.env.ALCHEMY_API_KEY,
+            infura: process.env.INFURA_API_KEY, 
+            etherscan: process.env.ETHERSCAN_API_KEY
+          })
+        }
         const wallet = new Ethers.Wallet(`0x${privateKey}`, provider)
         setEthers(wallet)
         createSession({ publicAddress, privateKey, name, profileImage })
