@@ -3,12 +3,14 @@ import { UserContext } from '../auth'
 import { Tabs, Tab } from 'react-bootstrap'
 import ItemCreate from './ItemCreate'
 import ItemList from './ItemList'
+import UnitsList from '../units/UnitsList'
 
 const ItemsBody = () => {
     const { user, loading, login } = useContext(UserContext)
     const [ itemList, setItemList ] = useState([{
         name: "Trip to Conference",
         imageURL: "https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fmubc.io%2Fstatic%2FMUBC%2520Logo%2520Big%2520Letters%2520(vector)%2520copy%25202-315c175009080bf630ce3841d97fb6c3.png&f=1&nofb=1",
+        imageUrl: "https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fmubc.io%2Fstatic%2FMUBC%2520Logo%2520Big%2520Letters%2520(vector)%2520copy%25202-315c175009080bf630ce3841d97fb6c3.png&f=1&nofb=1",
         cost: 100,
         isInfinite: false,
         quantity: 5,
@@ -19,6 +21,7 @@ const ItemsBody = () => {
     {
         name: "Meet with Professional",
         imageURL: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fpreview.free3d.com%2Fimg%2F2014%2F05%2F1688666439835190495%2F9vdaf5x3-900.jpg&f=1&nofb=1",
+        imageUrl: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fpreview.free3d.com%2Fimg%2F2014%2F05%2F1688666439835190495%2F9vdaf5x3-900.jpg&f=1&nofb=1",
         cost: 10,
         isInfinite: true,
         quantity: -1,
@@ -47,12 +50,12 @@ const ItemsBody = () => {
                     <Tabs activeKey={key} onSelect={k => setKey(k)}>
                         <Tab eventKey="active" title="Active">
                             <div style={{"margin": "20px"}}>
-                                <ItemList items={itemList.filter(i => i.isActive)} />
+                                <UnitsList unitsList={itemList.filter(i => i.isActive)} unitType="item" />
                             </div>
                         </Tab>
                         <Tab eventKey="inactive" title="Inactive">
                             <div style={{"margin": "20px"}}>
-                                <ItemList items={itemList.filter(i => !i.isActive)} />
+                                <UnitsList unitsList={itemList.filter(i => !i.isActive)} unitType="item" />
                             </div>
                         </Tab>
                         <Tab eventKey="create" title="Create">

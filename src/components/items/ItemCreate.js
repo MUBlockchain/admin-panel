@@ -36,6 +36,7 @@ const ItemCreate = (props) => {
         props.registerItem({
             name: title,
             imageURL: imageSrc,
+            imageUrl: imageSrc,
             cost: cost,
             isInfinite: isInfinite,
             quantity: isInfinite ? -1 : quantity,
