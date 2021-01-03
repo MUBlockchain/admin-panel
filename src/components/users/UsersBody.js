@@ -1,7 +1,6 @@
 import React, { useContext, useState } from 'react'
 import { UserContext } from '../auth'
 import { Tabs, Tab } from 'react-bootstrap'
-import '../announcements/announcementsBody.css'
 import UserList from './UserList'
 
 const UsersBody = () => {

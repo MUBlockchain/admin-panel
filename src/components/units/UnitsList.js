@@ -40,8 +40,8 @@ const Unit = (props) => {
                             </div>
                             <div>Quantity: {props.data?.isInfinite ? 'Infinite' : props.data?.quantity}</div>
                             {props.data?.isActive 
-                                ? <Button variant="success" style={{"marginTop": "15px"}}>Delist</Button>
-                                : <Button variant="secondary" style={{"marginTop": "15px"}} disabled>Delisted</Button>}
+                                ? <Button variant="success" style={{"marginTop": "15px"}}>DELIST</Button>
+                                : <Button variant="secondary" style={{"marginTop": "15px"}} disabled>DELISTED</Button>}
                         </Col>
                     </Row>
                     <Row>

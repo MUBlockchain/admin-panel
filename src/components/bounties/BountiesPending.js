@@ -44,12 +44,12 @@ const RequestDetails = (props) => {
                 <Row style={{ "margin": "20px"}}>
                     <Col sm={6}>
                         <Button variant="success">
-                            Accept
+                            ACCEPT
                         </Button>
                     </Col>
                     <Col sm={6}>
                         <Button variant="danger">
-                            Reject
+                            REJECT
                         </Button>
                     </Col>
                 </Row>

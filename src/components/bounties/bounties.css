@@ -13,3 +13,18 @@
 .btn {
     font-size: medium;
 }
+
+label.MuiFormLabel-root.MuiInputLabel-root {
+    font-size: medium;
+    font-family: georgia, serif;
+}
+
+.MuiFormControlLabel-label.MuiTypography-body1 {
+    font-size: medium;
+    font-family: georgia, serif;
+}
+
+.MuiButton-label {
+    font-size: medium;
+    font-family: georgia, serif;
+}

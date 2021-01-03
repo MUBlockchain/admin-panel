@@ -4,6 +4,7 @@ import { Tabs, Tab } from 'react-bootstrap'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import UnitsList from '../units/UnitsList'
 import BountiesPending from './BountiesPending'
+import ItemCreate from '../items/ItemCreate'
 import './bounties.css'
 
 const BountiesBody = () => {
@@ -91,6 +92,7 @@ const BountiesBody = () => {
         setInactiveBountiesList(bountiesList.filter((bounty) => (!bounty.isActive)));
     }, [bountiesList]);
 
+    const registerBounty = () => {}
     return (
         <>
         <div>
@@ -104,9 +106,7 @@ const BountiesBody = () => {
                             <UnitsList unitsList={inactiveBountiesList} unitType='bounty' />
                         </Tab>
                         <Tab eventKey="new" title="New">
-                            <div className="bounties-new">
-                                
-                            </div>
+                            <ItemCreate registerItem={registerBounty} isBounty={true}/>
                         </Tab>
                         <Tab eventKey="pending" title="Pending">
                             <BountiesPending />
@@ -116,7 +116,7 @@ const BountiesBody = () => {
                 : loading 
                     ? <CircularProgress color={'primary'} />
                     : <><h3 style={{ "marginTop": "25px"}}>Log in to continue</h3> 
-                    <div onClick={login} className="loginBtn">Log in</div></>
+                    <div onClick={login} className="loginBtn">LOG IN</div></>
             }
         </div>
         </>

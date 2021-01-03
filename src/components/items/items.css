@@ -1,0 +1,38 @@
+.items-display-area {
+    display: flex;
+}
+
+.item-card {
+    display: inline;
+    margin: 8px;
+    padding: 8px;
+    max-width: 112px;
+}
+
+.item-image {
+    display: block;
+    width: 96px;
+    height: 96px;
+    margin-bottom: 3px;
+    border-radius: 3px;
+}
+
+.item-display-name {
+    display: block;
+    max-width: 96
+}
+
+label.MuiFormLabel-root.MuiInputLabel-root {
+    font-size: medium;
+    font-family: georgia, serif;
+}
+
+.MuiFormControlLabel-label.MuiTypography-body1 {
+    font-size: medium;
+    font-family: georgia, serif;
+}
+
+.MuiButton-label {
+    font-size: medium;
+    font-family: georgia, serif;
+}
