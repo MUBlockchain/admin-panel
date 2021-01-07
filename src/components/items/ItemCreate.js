@@ -31,7 +31,11 @@ const ItemCreate = (props) => {
     const [ title, setTitle ] = useState("")
     const [ description, setDescription ] = useState("")
 
-    const submitItem = e => {
+    const submitItem = async (e) => {
+        console.log(selectedFile)
+        var buffer = await selectedFile.arrayBuffer();
+        console.log(buffer)
+        uploadImage(selectedFile);
         console.log(title, imageSrc, quantity, isInfinite, cost, description)
         props.registerItem({
             name: title,
@@ -43,6 +47,18 @@ const ItemCreate = (props) => {
             description: description,
             isActive: true
         });
+    }
+
+    const uploadImage = async body => {
+        let headers = {"Content-Type": "image/jpeg"}
+        const resp = await fetch("http://localhost:3000/api/image", {method: "POST", headers, body})
+        if (!resp.ok) {
+            let error = new Error('server responded with an http error')
+            error.code = resp.status
+            error.original = resp
+            throw error
+        }
+        console.log(await resp.text())
     }
 
     const imgStyle = {
