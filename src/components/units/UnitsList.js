@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { Row, Col, Modal, Card, Image, Button } from 'react-bootstrap'
-import { Search } from '@material-ui/icons';
-import { Paper, IconButton, InputBase, Tooltip } from '@material-ui/core';
+import { Paper, InputBase } from '@material-ui/core';
 import './unit.css'
 
 const Unit = (props) => {
@@ -41,8 +40,8 @@ const Unit = (props) => {
                             </div>
                             <div>Quantity: {props.data?.isInfinite ? 'Infinite' : props.data?.quantity}</div>
                             {props.data?.isActive 
-                                ? <Button variant="success" style={{"marginTop": "15px"}}>Delist</Button>
-                                : <Button variant="secondary" style={{"marginTop": "15px"}} disabled>Delisted</Button>}
+                                ? <Button variant="success" style={{"marginTop": "15px"}}>DELIST</Button>
+                                : <Button variant="secondary" style={{"marginTop": "15px"}} disabled>DELISTED</Button>}
                         </Col>
                     </Row>
                     <Row>
@@ -69,28 +68,17 @@ const UnitsList = (props) => {
 
     return (
         <>
-            <Paper component="form" style={{"paddingRight": "0px", "margin": "20px"}}>
+            <Paper component="form" style={{ "margin": "auto", "marginTop":"15px", "width": "80%" }}>
                 <Row>
-                    <Col sm={11}>
-                        <InputBase
-                            placeholder="Search by name..."
-                            inputProps={{ 'aria-label': 'search by title' }}
-                            onChange={e => setListToDisplay(props.unitsList
-                                .filter(
-                                    u => u.name.toLowerCase().includes(e.target.value.toLowerCase()))
-                            )}
-                            style={{ "fontSize": "15px", "fontFamily": "georgia, serif", "width": "95%" }} />
-                    </Col>
-                    <Col sm={1}>
-                        <Tooltip title="Search" placement="top">
-                            <IconButton
-                                type="submit"
-                                aria-label="search"
-                                size="small">
-                                <Search />
-                            </IconButton>
-                        </Tooltip>
-                    </Col>
+                    <InputBase
+                        placeholder="Search by name..."
+                        inputProps={{ 'aria-label': 'search by title' }}
+                        onChange={e => setListToDisplay(props.unitsList
+                            .filter(
+                                u => u.name.toLowerCase().includes(e.target.value.toLowerCase()))
+                        )}
+                        style={{ "fontSize": "15px", "fontFamily": "georgia, serif", "width": "90%", 
+                        "paddingLeft": "5px", "margin": "0px 20px 0px 20px" }} />
                 </Row>
             </Paper>
             <div>{displayList}</div>

@@ -105,7 +105,7 @@ const ItemCreate = (props) => {
                     </Row>
                     <Row>
                         <Col>
-                            <TextField label="Cost" variant="outlined" margin="dense" fullWidth shrink
+                            <TextField label={props.isBounty ? "Award" : "Cost"} variant="outlined" margin="dense" fullWidth shrink
                                 onChange={handleCostChange}
                                 value={cost}
                             />
@@ -113,6 +113,12 @@ const ItemCreate = (props) => {
                     </Row>
                 </Col>
             </Row>
+            {props.isBounty &&
+            <Row style={{"justifyContent": "center", "textAlign": "left"}}>
+                <Col sm={7}>
+                    <span>Award trigger: None</span>
+                </Col>
+            </Row>}
             <Row style={{"justifyContent": "center"}}>
                 <Col sm={7}>
                     <TextField label="Description" variant="outlined" multiline fullWidth margin="normal" rows={2} onChange={e => setDescription(e.target.value)} />
