@@ -1,0 +1,30 @@
+.searchInput {
+    font-size: 15px;
+    font-family: georgia, serif;
+    width: 90%; 
+    padding-left: 5px;
+    margin: 0px 20px 0px 20px;
+}
+
+.MuiPaper-root.request-clicked {
+    color:#a80000;
+}
+
+.btn {
+    font-size: medium;
+}
+
+label.MuiFormLabel-root.MuiInputLabel-root {
+    font-size: medium;
+    font-family: georgia, serif;
+}
+
+.MuiFormControlLabel-label.MuiTypography-body1 {
+    font-size: medium;
+    font-family: georgia, serif;
+}
+
+.MuiButton-label {
+    font-size: medium;
+    font-family: georgia, serif;
+}
