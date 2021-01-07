@@ -6,8 +6,9 @@
     margin: 0px 20px 0px 20px;
 }
 
-.MuiPaper-root.request-clicked {
+div.MuiPaper-rounded.request-clicked.MuiPaper-elevation1.MuiPaper-rounded {
     color:#a80000;
+    background-color: antiquewhite;
 }
 
 .btn {

@@ -102,10 +102,10 @@ const BountiesBody = () => {
                         <Tab eventKey="active" title="Active">
                             <UnitsList unitsList={activeBountiesList} unitType='bounty' />
                         </Tab>
-                        <Tab eventKey="delisted" title="Delisted">
+                        <Tab eventKey="delisted" title="Inactive">
                             <UnitsList unitsList={inactiveBountiesList} unitType='bounty' />
                         </Tab>
-                        <Tab eventKey="new" title="New">
+                        <Tab eventKey="new" title="Create">
                             <ItemCreate registerItem={registerBounty} isBounty={true}/>
                         </Tab>
                         <Tab eventKey="pending" title="Pending">

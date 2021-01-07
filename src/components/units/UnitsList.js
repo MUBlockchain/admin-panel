@@ -35,8 +35,8 @@ const Unit = (props) => {
                         </Col>
                         <Col sm={8} style={{"paddingLeft": "30px"}}>
                             <div>
-                                {props.type == 'bounty' ? 'Award: ' : 'Cost: '}
-                                {props.type == 'bounty' ? props.data?.award : props.data?.cost}
+                                {props.type === 'bounty' ? 'Award: ' : 'Cost: '}
+                                {props.type === 'bounty' ? props.data?.award : props.data?.cost}
                             </div>
                             <div>Quantity: {props.data?.isInfinite ? 'Infinite' : props.data?.quantity}</div>
                             {props.data?.isActive 
@@ -57,7 +57,7 @@ const UnitsList = (props) => {
     const [ listToDisplay, setListToDisplay ] = useState(props.unitsList);
     const displayList = listToDisplay.map((_, i) => 
             {   
-                return i % 4 == 0 && 
+                return i % 4 === 0 && 
                 <Row key={i} className="unitRow">
                     {listToDisplay.slice(i, i + 4 < listToDisplay.length ? i + 4 : listToDisplay.length).map((unit, i) => (
                         <Col key={i} md={3}><Unit data={unit} type={props.unitType || 'bounty'} /></Col>
