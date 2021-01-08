@@ -4,7 +4,7 @@ import { Paper, IconButton, InputBase, Grid, Tooltip, Checkbox } from '@material
 import { AiOutlinePushpin, AiFillPushpin } from 'react-icons/ai';
 import { NavigateNext, NavigateBefore, FilterListSharp } from '@material-ui/icons';
 import $ from 'jquery';
-import { useContract } from '../hooks';
+import { useAnnouncements } from '../hooks';
 
 const AnnouncementItem = (props) => {
     const [show, setShow] = useState(false);
@@ -48,8 +48,8 @@ const AnnouncementItem = (props) => {
                             <Row>
                                 <IconButton onClick={() => {
                                     handleClose();
-                                    props.updatepin(props.announcement.id);}}
-                                >{props.announcement.id === props.pin 
+                                    props.updatepin(props.announcement?.id);}}
+                                >{props.announcement?.id === props.pin 
                                     ? <AiFillPushpin style={{'color': 'red'}}/>
                                     : <AiOutlinePushpin />
                                 }
@@ -68,7 +68,7 @@ const AnnouncementItem = (props) => {
 }
 
 const AnnouncementList = () => {
-    const contract = useContract();
+    const contract = useAnnouncements();
     const [ pinIndex, setPinIndex ] = useState(-1);
     const [ announcementsList, setAnnouncementsList ] = useState([]);
     const [ showPinned, setShowPinned ] = useState(true);
@@ -77,7 +77,8 @@ const AnnouncementList = () => {
     const [ announcementsToShow, setAnnouncementsToShow ] = useState([]);
     const pageLimit = 5;
     const [ page, setPage ] = useState(1);
-
+    const monthLabels = ["Jan", "Feb", "Mar", "Apr",  "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"]
+    
     const getData = async () => {
         if (!contract) return;
         const data = await contract.getAnnouncements();
@@ -88,12 +89,13 @@ const AnnouncementList = () => {
             const datePosted = time.getMonth() + "/" + time.getDate() + "/" + time.getFullYear() 
             + " " + time.getHours() + ":" + time.getMinutes();
             announcements.push({
-                id: i,
+                id: (i + 1),
                 title: data._titles[i],
                 content: data._bodies[i],
                 datePosted: datePosted
             });
         }
+
         setAnnouncementsList(announcements);
         setAnnouncementsToShow(announcements);
         setCount(announcements.length);
@@ -108,14 +110,16 @@ const AnnouncementList = () => {
     useEffect(
         () => {
             let filterAnnouncements = [];
-            showPinned && pinIndex !== -1 && 
-                announcementsList?.length > 0 && filterAnnouncements.push(announcementsList[pinIndex]);
+            showPinned && pinIndex > 0 && 
+                announcementsList?.length > 0 && filterAnnouncements.push(announcementsList[pinIndex - 1]);
+
             filterAnnouncements = filterAnnouncements?.concat(
                 announcementsList?.filter(announcement => announcement.id !== pinIndex).reverse()
             );
             filterAnnouncements = filterAnnouncements?.filter(
                 announcement => (searchKey === '' || announcement.title.toLowerCase().includes(searchKey.toLowerCase()))
             )
+            
             setAnnouncementsToShow(filterAnnouncements);
             setCount(filterAnnouncements.length);
             setPage(1);

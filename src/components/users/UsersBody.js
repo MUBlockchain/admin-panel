@@ -1,10 +1,23 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { UserContext } from '../auth'
 import { Tabs, Tab } from 'react-bootstrap'
 import UserList from './UserList'
+import { useUsers } from '../hooks'
 
 const UsersBody = () => {
-    const { user, loading, login } = useContext(UserContext)
+    const { user, loading, login } = useContext(UserContext);
+    const usersContract = useUsers();
+
+    const getUsers = async () => {
+        if (!usersContract) return;
+        const res = await usersContract.getUsers();
+        console.log(res);
+    }
+
+    useEffect(() => { 
+        getUsers();
+    }, [ usersContract ])
+
     const [ userList, setUserList ] = useState([{
         name: "User 1",
         imageURL: "https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.tutorialsscripts.com%2Ffree-icons%2Foption-icons%2Fbrown-option-icon-96-x-96.png&f=1&nofb=1",

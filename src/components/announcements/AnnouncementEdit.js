@@ -1,11 +1,10 @@
 import React, { useState } from 'react'
 import { Form, Button } from 'react-bootstrap'
 import $ from 'jquery'
-import { useContract } from '../hooks'
-import { Snackbar } from '@material-ui/core'
+import { useAnnouncements } from '../hooks'
 
 const AnnouncementEdit = () => {
-    const contract = useContract();
+    const contract = useAnnouncements();
     const [ pin, setPin ] = useState(false);
     const [ open, setOpen ] = useState(false);
     const addAnnouncement = async () => {

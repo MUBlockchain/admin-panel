@@ -5,10 +5,12 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 import UnitsList from '../units/UnitsList'
 import BountiesPending from './BountiesPending'
 import ItemCreate from '../items/ItemCreate'
+import { useBounties } from '../hooks';
 import './bounties.css'
 
 const BountiesBody = () => {
     const { user, loading, login } = useContext(UserContext)
+    const bountiesContract = useBounties();
     const [ bountiesList, setBountiesList ] = useState([
         {
             name: "Miami Bounty 1",
