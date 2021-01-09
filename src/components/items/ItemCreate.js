@@ -48,6 +48,7 @@ const ItemCreate = (props) => {
         });
     }
 
+    // TODO: Make individual component or something for this function
     const uploadImage = async body => {
         let headers = {} //fetch will automatically add content header
         console.log(body);
