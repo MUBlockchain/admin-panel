@@ -13,6 +13,7 @@ const BountiesTabs = (props) => {
     const [ submitting, setSubmitting ] = useState(false); 
     const [ activeBounties, setActiveBounties ] = useState([]);
     const [ inactiveBounties, setInactiveBounties ] = useState([]);
+    const [ listChanged, setListChanged ] = useState(false);
 
     const getBountiesList = async () => {
         if (!props.contract) return;
@@ -22,7 +23,7 @@ const BountiesTabs = (props) => {
 
         for (let i = 0; i < res._bountyNonce.toNumber(); i++) {
             const bounty = {
-                id: i,
+                id: (i + 1),
                 name: res._titles[i],
                 description: res._descriptions[i],
                 award: res._awards[i].toNumber(),
@@ -42,10 +43,6 @@ const BountiesTabs = (props) => {
         setActiveBounties(active);
         setInactiveBounties(inactive);
     }
-
-    useEffect(() => {
-        getBountiesList();
-    }, [])
 
     const registerBounty = async (data) => {
         if (!props.contract) return;
@@ -75,39 +72,42 @@ const BountiesTabs = (props) => {
             toast.success(<span>Bounty successfully added!</span>, {
                 duration: 5000
             });
-            let activeList = activeBounties;
-            activeList.push(data);
-            setActiveBounties(activeList);
+            
+            activeBounties.push(data);
         } catch (error) {
             toast.error(<span>An error has occurred. Please try again later.</span>);
             console.log(error);
         } finally {
             setSubmitting(false);
+            window.location.reload();
         }
     }
 
-    const delistBounty = async(id, pos) => {
+    const requestDelist = async (id) => {
         if (!props.contract) return;
-        console.log('Attempt to delist a bounty');
-        let active = activeBounties;
-        let inactive = inactiveBounties;
-        active[pos].isActive = false;
-        inactive.push(active[pos]);
-        active.splice(pos, 1);
-        console.log(active)
-        console.log(inactive)
-        setActiveBounties(active);
-        setInactiveBounties(inactive);
-        console.log(id, pos);
+        const tx = await props.contract.delistBounty(id);
+        console.log(tx);
     }
+
+    const delistBounty = (id, pos) => {
+        if (!props.contract) return;
+        requestDelist(id);
+        activeBounties[pos].isActive = false;
+        inactiveBounties.push(activeBounties.splice(pos, 1)[0]);
+        setListChanged(!listChanged);
+    }
+
+    useEffect(() => {
+        getBountiesList();
+    }, []);
 
     return (
         <Tabs defaultActiveKey="active">
             <Tab eventKey="active" title="Active">
-                <UnitsList unitsList={activeBounties} unitType='bounty' handleDelist={delistBounty}/>
+                <UnitsList key={listChanged} unitsList={activeBounties} unitType='bounty' handleDelist={delistBounty}/>
             </Tab>
             <Tab eventKey="inactive" title="Inactive">
-                <UnitsList unitsList={inactiveBounties} unitType='bounty' />
+                <UnitsList key={listChanged} unitsList={inactiveBounties} unitType='bounty' />
             </Tab>
             <Tab eventKey="new" title="Create">
                 <ItemCreate registerItem={registerBounty} isBounty={true} loading={submitting}/>

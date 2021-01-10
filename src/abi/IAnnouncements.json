@@ -2217,7 +2217,7 @@
   },
   "networks": {},
   "schemaVersion": "3.3.1",
-  "updatedAt": "2021-01-08T02:39:46.883Z",
+  "updatedAt": "2021-01-10T20:06:24.667Z",
   "devdoc": {
     "methods": {
       "addAnnouncement(string,string,bool)": {

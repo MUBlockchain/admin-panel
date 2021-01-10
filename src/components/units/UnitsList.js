@@ -43,7 +43,10 @@ const Unit = (props) => {
                                 ? <Button 
                                     variant="success" 
                                     style={{"marginTop": "15px"}}
-                                    onClick={() => { props.handleDelist(props.data?.id, props.pos); }}
+                                    onClick={() => { 
+                                        props.handleDelist(props.data?.id, props.pos); 
+                                        handleClose();
+                                    }}
                                 >
                                     DELIST
                                 </Button>
@@ -60,15 +63,14 @@ const Unit = (props) => {
 }
 
 const UnitsList = (props) => {
-    const [ listToDisplay, setListToDisplay ] = useState([]);
+    const [ listToDisplay, setListToDisplay ] = useState(props.unitsList);
+
     useEffect(
-        () => { 
-            console.log(props.unitsList);
-            setListToDisplay(props.unitsList); 
-        }, [props.unitsList]
-    )
-    console.log('unitlist changes?')
-    console.log(props.unitsList)
+        () => {
+            setListToDisplay(props.unitsList);
+        }, [ props.unitsList ]
+    );
+
     const displayList = listToDisplay.map((_, i) => 
         {   
             return i % 4 === 0 && 

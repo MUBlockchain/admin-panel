@@ -1,8 +1,12 @@
 import React, { useState } from 'react'
 import { Container, Row, Col } from 'react-bootstrap'
 import { Button, TextField, Switch, FormControlLabel } from '@material-ui/core'
+import { ImageUploadButton, UploadToAws, ExpandAwsUrl } from './../image-upload-utils'
+
 
 const ItemCreate = (props) => {
+
+    const imageRef = React.createRef()
 
     const [ isInfinite, setIsInfinite ] = useState(false);
     const toggleInfinite = () => setIsInfinite(!isInfinite)
@@ -22,43 +26,38 @@ const ItemCreate = (props) => {
     const [ imageSrc, setImageSrc ] = useState("")
     const [ selectedFile, setSelectedFile ] = useState()
     const [ isFilePicked, setIsFilePicked ] = useState(false)
-    const handleSelectedFileChange = e => {
-        setSelectedFile(e.target.files[0])
+    const handleSelectedFileChange = file => {
+        setSelectedFile(file)
         setIsFilePicked(true)
-        setImageSrc(URL.createObjectURL(e.target.files[0]))
     }
 
     const [ title, setTitle ] = useState("")
     const [ description, setDescription ] = useState("")
 
-    const resetForm = () => {
-        setQuantity("");
-        setCost("");
-        setImageSrc("");
-        setTitle("");
-        setDescription("");
-    }
-
-    const submitItem = e => {
-        console.log(title, imageSrc, quantity, isInfinite, cost, description);
-        let data = {
-            name: title,
-            imageURL: imageSrc || "https://pbs.twimg.com/profile_images/1083095475123879936/6lceQdX6_400x400.jpg",
-            imageUrl: imageSrc || "https://pbs.twimg.com/profile_images/1083095475123879936/6lceQdX6_400x400.jpg",
-            isInfinite: isInfinite,
-            quantity: isInfinite ? 1 : quantity,
-            description: description,
-            isActive: true
-        }
-        if (!props.isBounty) {
-            data.cost = cost;
-        } else {
-            data.award = cost;
-            data.tweetId = -1;
-            data.manual = true;
-        }
-        props.registerItem(data);
-        resetForm();
+    const submitItem = (e) => {
+        let formData = new FormData();
+        formData.append("image", selectedFile);
+        UploadToAws(selectedFile, url => {
+            console.log(url);
+            console.log(title, ExpandAwsUrl(url), quantity, isInfinite, cost, description)
+            let data = {
+                name: title,
+                imageURL: ExpandAwsUrl(url),
+                imageUrl: ExpandAwsUrl(url),
+                isInfinite: isInfinite,
+                quantity: isInfinite ? 1 : quantity,
+                description: description,
+                isActive: true
+            };
+            if (!props.isBounty) {
+                data.cost = cost;
+            } else {
+                data.award = cost;
+                data.tweetId = -1;
+                data.manual = true;
+            }
+            props.registerItem(data);
+        })
     }
 
     const imgStyle = {
@@ -78,23 +77,12 @@ const ItemCreate = (props) => {
                 <Col md={2}>
                     <Row>
                         <Col>
-                            <img style={imgStyle} src={imageSrc} />
+                            <img style={imgStyle} src={imageSrc} ref={imageRef} />
                         </Col>
                     </Row>
                     <Row>
                         <Col style={{"textAlign": "center"}}>
-                            <input
-                                accept="image/*"
-                                style={{"display": "none"}}
-                                id="contained-button-file"
-                                type="file"
-                                onChange={handleSelectedFileChange}
-                            />
-                            <label htmlFor="contained-button-file">
-                                <Button variant="outlined" style={{"color": "#d11", "borderColor": "#d11"}} component="span">
-                                    Upload
-                                </Button>
-                            </label>
+                            <ImageUploadButton onChange={handleSelectedFileChange} imageRef={imageRef} />
                         </Col>
                     </Row>
                 </Col>

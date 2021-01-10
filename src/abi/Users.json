@@ -13771,12 +13771,12 @@
         }
       },
       "links": {},
-      "address": "0x6342A55e5F77d4A94E180c7582DBAceb36Bc2A15",
-      "transactionHash": "0x4c0cc32e50dc6f76461b61e9cce5fb63197e36d45d2a2c261756b4e8c7544899"
+      "address": "0x04B0b293FdF06E41B3e0F112a461b832f1E01b1A",
+      "transactionHash": "0x6d98d2bcbc2fcf0829bbcc781c99663dbe30282c4a35e09b7269e2b16f460da8"
     }
   },
   "schemaVersion": "3.3.1",
-  "updatedAt": "2021-01-08T15:42:11.433Z",
+  "updatedAt": "2021-01-10T20:09:33.940Z",
   "networkType": "ethereum",
   "devdoc": {
     "methods": {}
