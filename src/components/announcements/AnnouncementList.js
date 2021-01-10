@@ -86,8 +86,9 @@ const AnnouncementList = () => {
         let announcements = [];
         for (let i = 0; i < data._nonce.toNumber(); i++ ) {
             const time = new Date(data._timecodes[i].toNumber()*1000);
-            const datePosted = time.getMonth() + "/" + time.getDate() + "/" + time.getFullYear() 
-            + " " + time.getHours() + ":" + time.getMinutes();
+            const datePosted = `${monthLabels[time.getMonth()]} ${time.getDate()}, 
+                ${time.getFullYear()} ${time.getHours()%12}:${time.getMinutes()} 
+                ${time.getHours() >= 12 ? "PM" : "AM"}`;
             announcements.push({
                 id: (i + 1),
                 title: data._titles[i],

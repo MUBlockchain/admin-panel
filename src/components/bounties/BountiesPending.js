@@ -134,6 +134,7 @@ const BountiesPending = () => {
                 }
             }
         ])
+
         setRequestsToShow([
             {
                 user: "User 1",
@@ -221,6 +222,7 @@ const BountiesPending = () => {
                                 r => r.user.toLowerCase().includes(event.target.value.toLowerCase())
                             )
                         );
+                        setCurrentRequest(null);
                     }}/>
             </Row>
         </Paper>

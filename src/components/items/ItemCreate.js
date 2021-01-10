@@ -1,19 +1,19 @@
 import React, { useState } from 'react'
-import { Container, Row, Col, Modal } from 'react-bootstrap'
-import { Paper, Button, InputBase, TextField, Switch, FormControlLabel } from '@material-ui/core'
+import { Container, Row, Col } from 'react-bootstrap'
+import { Button, TextField, Switch, FormControlLabel } from '@material-ui/core'
 
 const ItemCreate = (props) => {
 
     const [ isInfinite, setIsInfinite ] = useState(false);
     const toggleInfinite = () => setIsInfinite(!isInfinite)
 
-    const [ quantity, setQuantity ] = useState("0");
+    const [ quantity, setQuantity ] = useState("");
     const handleQuantityChange = e => {
         const onlyNums = e.target.value.replace(/[^0-9]/g, '');
         setQuantity(Number(onlyNums).toString());
     }
 
-    const [ cost, setCost ] = useState("0");
+    const [ cost, setCost ] = useState("");
     const handleCostChange = e => {
         const onlyNums = e.target.value.replace(/[^0-9]/g, '');
         setCost(Number(onlyNums).toString());
@@ -31,18 +31,34 @@ const ItemCreate = (props) => {
     const [ title, setTitle ] = useState("")
     const [ description, setDescription ] = useState("")
 
+    const resetForm = () => {
+        setQuantity("");
+        setCost("");
+        setImageSrc("");
+        setTitle("");
+        setDescription("");
+    }
+
     const submitItem = e => {
-        console.log(title, imageSrc, quantity, isInfinite, cost, description)
-        props.registerItem({
+        console.log(title, imageSrc, quantity, isInfinite, cost, description);
+        let data = {
             name: title,
-            imageURL: imageSrc,
-            imageUrl: imageSrc,
-            cost: cost,
+            imageURL: imageSrc || "https://pbs.twimg.com/profile_images/1083095475123879936/6lceQdX6_400x400.jpg",
+            imageUrl: imageSrc || "https://pbs.twimg.com/profile_images/1083095475123879936/6lceQdX6_400x400.jpg",
             isInfinite: isInfinite,
-            quantity: isInfinite ? -1 : quantity,
+            quantity: isInfinite ? 1 : quantity,
             description: description,
             isActive: true
-        });
+        }
+        if (!props.isBounty) {
+            data.cost = cost;
+        } else {
+            data.award = cost;
+            data.tweetId = -1;
+            data.manual = true;
+        }
+        props.registerItem(data);
+        resetForm();
     }
 
     const imgStyle = {
@@ -59,7 +75,7 @@ const ItemCreate = (props) => {
     return (
         <Container fluid="sm">
             <Row style={{"justifyContent": "center", "textAlign": "left"}}>
-                <Col sm={2}>
+                <Col md={2}>
                     <Row>
                         <Col>
                             <img style={imgStyle} src={imageSrc} />
@@ -82,10 +98,10 @@ const ItemCreate = (props) => {
                         </Col>
                     </Row>
                 </Col>
-                <Col sm={5}>
+                <Col md={5}>
                     <Row>
                         <Col>
-                            <TextField label="Title" variant="outlined" margin="dense" fullWidth onChange={e => setTitle(e.target.value)} />
+                            <TextField label="Title" value={title} variant="outlined" margin="dense" fullWidth onChange={e => setTitle(e.target.value)} required />
                         </Col>
                     </Row>
                     <Row>
@@ -108,25 +124,30 @@ const ItemCreate = (props) => {
                             <TextField label={props.isBounty ? "Award" : "Cost"} variant="outlined" margin="dense" fullWidth shrink
                                 onChange={handleCostChange}
                                 value={cost}
-                            />
+                                required/>
                         </Col>
                     </Row>
                 </Col>
             </Row>
             {props.isBounty &&
             <Row style={{"justifyContent": "center", "textAlign": "left"}}>
-                <Col sm={7}>
+                <Col md={7}>
                     <span>Award trigger: None</span>
                 </Col>
             </Row>}
             <Row style={{"justifyContent": "center"}}>
-                <Col sm={7}>
-                    <TextField label="Description" variant="outlined" multiline fullWidth margin="normal" rows={2} onChange={e => setDescription(e.target.value)} />
+                <Col md={7}>
+                    <TextField label="Description" value={description} variant="outlined" multiline fullWidth margin="normal" rows={2} onChange={e => setDescription(e.target.value)} />
                 </Col>
             </Row>
             <Row style={{"justifyContent": "center"}}>
-                <Col sm={7}>
-                    <Button variant="contained" style={{"backgroundColor": "#d11", "color": "#fff"}} onClick={submitItem}>
+                <Col md={7}>
+                    <Button 
+                        disabled={props.loading} 
+                        variant="contained" 
+                        style={{"backgroundColor": "#d11", "color": "#fff"}} 
+                        onClick={submitItem}
+                    >
                         Submit
                     </Button>
                 </Col>

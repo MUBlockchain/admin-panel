@@ -1,24 +1,40 @@
 import React, { useState } from 'react'
 import { Form, Button } from 'react-bootstrap'
+import toast, { Toaster } from 'react-hot-toast'
 import $ from 'jquery'
 import { useAnnouncements } from '../hooks'
 
 const AnnouncementEdit = () => {
     const contract = useAnnouncements();
     const [ pin, setPin ] = useState(false);
-    const [ open, setOpen ] = useState(false);
+    const [ loading, setLoading ] = useState(false);
+
     const addAnnouncement = async () => {
-        const response = await contract.addAnnouncement($('#announcementTitle').val(), 
-            $('#announcementDesc').val(), pin);
-        return response;
+        if (!contract) return;
+        setLoading(true);
+        try {
+            const loadingToast = toast.loading(
+                <div>Processing...</div>
+            );
+            const tx = await contract.addAnnouncement($('#announcementTitle').val(), 
+                $('#announcementDesc').val(), pin);
+            const receipt = await tx.wait();
+            toast.remove(loadingToast);
+            toast.success(<div>Announcement added!</div>, {
+                duration: 5000
+            });
+        } catch (error) {
+            toast.error(<div>An error has occurred. Please try again later.</div>);
+            console.log(error);
+        } finally {
+            setLoading(false);
+            $('#announcementForm').get(0).reset();
+            window.location.reload();
+        }
     }
     const handleSubmit = async (event) => {
         event.preventDefault();
-        if (!contract) return;
-        addAnnouncement().then(res => {
-            $('#announcementForm').get(0).reset();
-            setOpen(true);
-        }).catch(err => console.log(err));
+        addAnnouncement();
     }
     
     return (
@@ -43,19 +59,22 @@ const AnnouncementEdit = () => {
                 <div style={{'textAlign': 'right'}}>
                     <Button variant="danger" 
                         style={{'fontSize': 'medium'}}
-                        type='submit'>
+                        type='submit'
+                        disabled={loading}>
                         Release Announcement
                     </Button>
                 </div>
             </Form>
-            <Snackbar 
-                open={open} 
-                autoHideDuration={2000} 
-                anchorOrigin={{vertical: "bottom", horizontal: "center"}}
-                onClose={() => { setOpen(false); }}
-                message="Announcement successfully created!"
-            >
-            </Snackbar>
+            <Toaster
+                position="top-right"
+                toastOptions={{
+                    loading: {
+                        iconTheme: {
+                            primary: '#06AA2F',
+                        }
+                    }
+                }}
+            />
         </>
     )
 }
