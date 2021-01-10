@@ -1,8 +1,11 @@
 import React, { useState } from 'react'
 import { Container, Row, Col, Modal } from 'react-bootstrap'
 import { Paper, Button, InputBase, TextField, Switch, FormControlLabel } from '@material-ui/core'
+import { ImageUploadButton, UploadToAws, ExpandAwsUrl } from './../image-upload-utils'
 
 const ItemCreate = (props) => {
+
+    const imageRef = React.createRef()
 
     const [ isInfinite, setIsInfinite ] = useState(false);
     const toggleInfinite = () => setIsInfinite(!isInfinite)
@@ -22,45 +25,31 @@ const ItemCreate = (props) => {
     const [ imageSrc, setImageSrc ] = useState("")
     const [ selectedFile, setSelectedFile ] = useState()
     const [ isFilePicked, setIsFilePicked ] = useState(false)
-    const handleSelectedFileChange = e => {
-        setSelectedFile(e.target.files[0])
+    const handleSelectedFileChange = file => {
+        setSelectedFile(file)
         setIsFilePicked(true)
-        setImageSrc(URL.createObjectURL(e.target.files[0]))
     }
 
     const [ title, setTitle ] = useState("")
     const [ description, setDescription ] = useState("")
 
-    const submitItem = async (e) => {
+    const submitItem = (e) => {
         let formData = new FormData();
         formData.append("image", selectedFile);
-        uploadImage(formData);
-        console.log(title, imageSrc, quantity, isInfinite, cost, description)
-        props.registerItem({
-            name: title,
-            imageURL: imageSrc,
-            imageUrl: imageSrc,
-            cost: cost,
-            isInfinite: isInfinite,
-            quantity: isInfinite ? -1 : quantity,
-            description: description,
-            isActive: true
-        });
-    }
-
-    // TODO: Make individual component or something for this function
-    const uploadImage = async body => {
-        let headers = {} //fetch will automatically add content header
-        console.log(body);
-        const resp = await fetch("http://localhost:3000/api/image", {method: "POST", headers, body})
-        if (!resp.ok) {
-            console.log("http error");
-            //let error = new Error('server responded with an http error')
-            //error.code = resp.status
-            //error.original = resp
-            //throw error
-        }
-        console.log(await resp.text())
+        UploadToAws(selectedFile, url => {
+            console.log(url);
+            console.log(title, ExpandAwsUrl(url), quantity, isInfinite, cost, description)
+            props.registerItem({
+                name: title,
+                imageURL: ExpandAwsUrl(url),
+                imageUrl: ExpandAwsUrl(url),
+                cost: cost,
+                isInfinite: isInfinite,
+                quantity: isInfinite ? -1 : quantity,
+                description: description,
+                isActive: true
+            });
+        })
     }
 
     const imgStyle = {
@@ -80,23 +69,12 @@ const ItemCreate = (props) => {
                 <Col sm={2}>
                     <Row>
                         <Col>
-                            <img style={imgStyle} src={imageSrc} />
+                            <img style={imgStyle} src={imageSrc} ref={imageRef} />
                         </Col>
                     </Row>
                     <Row>
                         <Col style={{"textAlign": "center"}}>
-                            <input
-                                accept="image/*"
-                                style={{"display": "none"}}
-                                id="contained-button-file"
-                                type="file"
-                                onChange={handleSelectedFileChange}
-                            />
-                            <label htmlFor="contained-button-file">
-                                <Button variant="outlined" style={{"color": "#d11", "borderColor": "#d11"}} component="span">
-                                    Upload
-                                </Button>
-                            </label>
+                            <ImageUploadButton onChange={handleSelectedFileChange} imageRef={imageRef} />
                         </Col>
                     </Row>
                 </Col>
