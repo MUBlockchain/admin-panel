@@ -6,7 +6,7 @@ import UnitsList from '../units/UnitsList'
 import BountiesPending from './BountiesPending'
 import ItemCreate from '../items/ItemCreate'
 import toast, { Toaster } from 'react-hot-toast'
-import { useBounties } from '../hooks';
+import { useBounties, useUsers } from '../hooks';
 import './bounties.css'
 
 const BountiesTabs = (props) => {
@@ -47,10 +47,10 @@ const BountiesTabs = (props) => {
     const registerBounty = async (data) => {
         if (!props.contract) return;
         setSubmitting(true);
+        const loadingToast = toast.loading(
+            <span>Processing...</span>
+        );
         try {
-            const loadingToast = toast.loading(
-                <span>Processing...</span>
-            );
             if (!data.name || !data.award) {
                 toast.remove(loadingToast);
                 toast.error(<span>Please enter bounty title and/or award.</span>);
@@ -75,6 +75,7 @@ const BountiesTabs = (props) => {
             
             activeBounties.push(data);
         } catch (error) {
+            toast.remove(loadingToast);
             toast.error(<span>An error has occurred. Please try again later.</span>);
             console.log(error);
         } finally {
@@ -113,7 +114,7 @@ const BountiesTabs = (props) => {
                 <ItemCreate registerItem={registerBounty} isBounty={true} loading={submitting}/>
             </Tab>
             <Tab eventKey="pending" title="Pending">
-                <BountiesPending />
+                <BountiesPending contract={props.contract}/>
             </Tab>
         </Tabs>
     )
@@ -122,6 +123,20 @@ const BountiesTabs = (props) => {
 const BountiesBody = () => {
     const { user, loading, login } = useContext(UserContext);
     const bountiesContract = useBounties();
+    // const userContract = useUsers();
+
+    // const temp = async () => {
+    //     if (userContract) {
+    //         const res = await userContract.getUsers();
+    //         console.log(res);
+    //     }
+    // }
+
+    // useEffect( 
+    //     () => {
+    //         temp();
+    //     }, [userContract]
+    // )
 
     return (
         <>

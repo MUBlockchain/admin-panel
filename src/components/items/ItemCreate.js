@@ -100,7 +100,7 @@ const ItemCreate = (props) => {
                             />
                         </Col>
                         <Col>
-                            <TextField label="Quantity" variant="outlined" margin="dense" fullWidth shrink
+                            <TextField label="Quantity" variant="outlined" margin="dense" fullWidth shrink="true"
                                 disabled={isInfinite}
                                 onChange={handleQuantityChange}
                                 value={isInfinite ? "N/A" : quantity}
@@ -109,7 +109,7 @@ const ItemCreate = (props) => {
                     </Row>
                     <Row>
                         <Col>
-                            <TextField label={props.isBounty ? "Award" : "Cost"} variant="outlined" margin="dense" fullWidth shrink
+                            <TextField label={props.isBounty ? "Award" : "Cost"} variant="outlined" margin="dense" fullWidth shrink="true"
                                 onChange={handleCostChange}
                                 value={cost}
                                 required/>
