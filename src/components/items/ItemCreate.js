@@ -34,8 +34,6 @@ const ItemCreate = (props) => {
     const [ description, setDescription ] = useState("")
 
     const submitItem = (e) => {
-        let formData = new FormData();
-        formData.append("image", selectedFile);
         UploadToAws(selectedFile, url => {
             console.log(url);
             console.log(title, ExpandAwsUrl(url), quantity, isInfinite, cost, description)
