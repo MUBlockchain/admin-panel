@@ -39,7 +39,7 @@
     font-size: medium;
 }
 
-.dropdown-item {
+.dropdown-item, .dropdown-item:focus {
     background-color: rgb(255, 253, 250);
 }
 
