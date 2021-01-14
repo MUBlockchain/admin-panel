@@ -123,20 +123,22 @@ const BountiesTabs = (props) => {
 const BountiesBody = () => {
     const { user, loading, login } = useContext(UserContext);
     const bountiesContract = useBounties();
-    // const userContract = useUsers();
+    const userContract = useUsers();
 
-    // const temp = async () => {
-    //     if (userContract) {
-    //         const res = await userContract.getUsers();
-    //         console.log(res);
-    //     }
-    // }
+    const temp = async () => {
+        if (userContract) {
+            console.log('registering')
+            const res = await userContract.getUsers();
+            // const res = await userContract.enroll("Linh Nguyen", "1314032935415222272", "https://lh3.googleusercontent.com/-m7Fb_h6rfjE/AAAAAAAAAAI/AAAAAAAAAAA/AMZuucntDYOCqqSl4oErFktry1Q8QEcKFA/s96-c/photo.jpg");
+            console.log(res);
+        }
+    }
 
-    // useEffect( 
-    //     () => {
-    //         temp();
-    //     }, [userContract]
-    // )
+    useEffect( 
+        () => {
+            temp();
+        }, [userContract]
+    )
 
     return (
         <>
