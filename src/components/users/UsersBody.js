@@ -4,15 +4,6 @@ import { Tabs, Tab } from 'react-bootstrap'
 import UserList from './UserList'
 import { useUsers } from '../hooks'
 
-class User {
-    constructor(name, imageUrl, role, balance) {
-        this.name = name;
-        this.imageUrl = imageUrl;
-        this.isAdministrator = parseInt(role) == 2 ? true : false;
-        this.balance = parseInt(balance);
-    }
-}
-
 const UsersBody = () => {
     const { user, loading, login } = useContext(UserContext);
     const usersContract = useUsers();
@@ -69,6 +60,15 @@ const UsersBody = () => {
             }
         </div>
     )
+}
+
+class User {
+    constructor(name, imageUrl, role, balance) {
+        this.name = name;
+        this.imageUrl = imageUrl;
+        this.isAdministrator = parseInt(role) == 2 ? true : false;
+        this.balance = parseInt(balance);
+    }
 }
 
 export default UsersBody
