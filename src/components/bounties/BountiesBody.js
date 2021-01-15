@@ -5,113 +5,157 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 import UnitsList from '../units/UnitsList'
 import BountiesPending from './BountiesPending'
 import ItemCreate from '../items/ItemCreate'
+import toast, { Toaster } from 'react-hot-toast'
+import { useBounties, useUsers } from '../hooks';
 import './bounties.css'
 
-const BountiesBody = () => {
-    const { user, loading, login } = useContext(UserContext)
-    const [ bountiesList, setBountiesList ] = useState([
-        {
-            name: "Miami Bounty 1",
-            description: "Text description for bounty 1",
-            award: 5,
-            imageUrl: "https://i.pinimg.com/564x/1f/3b/9c/1f3b9c69c86dba282885faefdf1d55b2.jpg",
-            isActive: true,
-            isInfinite: false,
-            quantity: 10
-        },
-        {
-            name: "Org Bounty 2",
-            description: "Text description for bounty 2...",
-            award: 8,
-            imageUrl: "https://cdn-images-1.medium.com/max/1200/1*7OArorLfbNT9lmqrijahjg.png",
-            isActive: true,
-            isInfinite: false,
-            quantity: 5
-        },
-        {
-            name: "Conference Bounty 3",
-            description: "Text description for bounty 3...",
-            award: 2,
-            imageUrl: "https://www.swissdigitalhealth.com/wp-content/uploads/2017/03/conference-showcase-SDH.jpg",
-            isActive: true,
-            isInfinite: true,
-            quantity: null
-        },
-        {
-            name: "Bounty 4",
-            description: "Text description for bounty 4...",
-            award: 6,
-            imageUrl: "https://hackernoon.com/hn-images/1*I3PvdUSaBNnw4qg_JQqirg.png",
-            isActive: false,
-            isInfinite: false,
-            quantity: 20
-        },
-        {
-            name: "Bounty 5",
-            description: "Text description for bounty 5...",
-            award: 6,
-            imageUrl: "https://hackernoon.com/hn-images/1*I3PvdUSaBNnw4qg_JQqirg.png",
-            isActive: false,
-            isInfinite: false,
-            quantity: 20
-        },
-        {
-            name: "Bounty 6",
-            description: "Text description for bounty 6...",
-            award: 6,
-            imageUrl: "https://hackernoon.com/hn-images/1*I3PvdUSaBNnw4qg_JQqirg.png",
-            isActive: false,
-            isInfinite: false,
-            quantity: 20
-        },
-        {
-            name: "Bounty 7",
-            description: "Text description for bounty 7...",
-            award: 6,
-            imageUrl: "https://hackernoon.com/hn-images/1*I3PvdUSaBNnw4qg_JQqirg.png",
-            isActive: false,
-            isInfinite: false,
-            quantity: 20
-        }
-        ,
-        {
-            name: "Bounty 8",
-            description: "Text description for bounty 8...",
-            award: 6,
-            imageUrl: "https://hackernoon.com/hn-images/1*I3PvdUSaBNnw4qg_JQqirg.png",
-            isActive: false,
-            isInfinite: false,
-            quantity: 20
-        }
-    ])
+const BountiesTabs = (props) => {
+    const [ submitting, setSubmitting ] = useState(false); 
+    const [ activeBounties, setActiveBounties ] = useState([]);
+    const [ inactiveBounties, setInactiveBounties ] = useState([]);
+    const [ listChanged, setListChanged ] = useState(false);
 
-    const [ activeBountiesList, setActiveBountiesList ] = useState([])
-    const [ inactiveBountiesList, setInactiveBountiesList ] = useState([])
+    const getBountiesList = async () => {
+        if (!props.contract) return;
+        const res = await props.contract.getBounties();
+        let active = [];
+        let inactive = [];
+
+        for (let i = 0; i < res._bountyNonce.toNumber(); i++) {
+            const bounty = {
+                id: (i + 1),
+                name: res._titles[i],
+                description: res._descriptions[i],
+                award: res._awards[i].toNumber(),
+                imageUrl: res._imageUrls[i],
+                isActive: res._actives[i],
+                isInfinite: res._infinites[i],
+                quantity: res._quantities[i].toNumber(),
+                isManual: res._manuals[i]
+            };
+            if (bounty.isActive) {
+                active.push(bounty);
+            } else {
+                inactive.push(bounty);
+            }
+        }
+
+        setActiveBounties(active);
+        setInactiveBounties(inactive);
+    }
+
+    const registerBounty = async (data) => {
+        if (!props.contract) return;
+        setSubmitting(true);
+        const loadingToast = toast.loading(
+            <span>Processing...</span>
+        );
+        try {
+            if (!data.name || !data.award) {
+                toast.remove(loadingToast);
+                toast.error(<span>Please enter bounty title and/or award.</span>);
+                setSubmitting(false);
+                return;
+            }
+            const tx = await props.contract.addBounty(
+                data.name,
+                data.description,
+                data.imageUrl,
+                Number(data.award),
+                data.isInfinite,
+                Number(data.quantity),
+                data.manual,
+                data.tweetId
+            );
+            const receipt = await tx.wait();
+            toast.remove(loadingToast);
+            toast.success(<span>Bounty successfully added!</span>, {
+                duration: 5000
+            });
+            
+            activeBounties.push(data);
+        } catch (error) {
+            toast.remove(loadingToast);
+            toast.error(<span>An error has occurred. Please try again later.</span>);
+            console.log(error);
+        } finally {
+            setSubmitting(false);
+            window.location.reload();
+        }
+    }
+
+    const requestDelist = async (id) => {
+        if (!props.contract) return;
+        const tx = await props.contract.delistBounty(id);
+        console.log(tx);
+    }
+
+    const delistBounty = (id, pos) => {
+        if (!props.contract) return;
+        requestDelist(id);
+        activeBounties[pos].isActive = false;
+        inactiveBounties.push(activeBounties.splice(pos, 1)[0]);
+        setListChanged(!listChanged);
+    }
+
     useEffect(() => {
-        setActiveBountiesList(bountiesList.filter((bounty) => (bounty.isActive)));
-        setInactiveBountiesList(bountiesList.filter((bounty) => (!bounty.isActive)));
-    }, [bountiesList]);
+        getBountiesList();
+    }, []);
 
-    const registerBounty = () => {}
+    return (
+        <Tabs defaultActiveKey="active">
+            <Tab eventKey="active" title="Active">
+                <UnitsList key={listChanged} unitsList={activeBounties} unitType='bounty' handleDelist={delistBounty}/>
+            </Tab>
+            <Tab eventKey="inactive" title="Inactive">
+                <UnitsList key={listChanged} unitsList={inactiveBounties} unitType='bounty' />
+            </Tab>
+            <Tab eventKey="new" title="Create">
+                <ItemCreate registerItem={registerBounty} isBounty={true} loading={submitting}/>
+            </Tab>
+            <Tab eventKey="pending" title="Pending">
+                <BountiesPending contract={props.contract}/>
+            </Tab>
+        </Tabs>
+    )
+}
+
+const BountiesBody = () => {
+    const { user, loading, login } = useContext(UserContext);
+    const bountiesContract = useBounties();
+    const userContract = useUsers();
+
+    const temp = async () => {
+        if (userContract) {
+            console.log('registering')
+            const res = await userContract.getUsers();
+            // const res = await userContract.enroll("Linh Nguyen", "1314032935415222272", "https://lh3.googleusercontent.com/-m7Fb_h6rfjE/AAAAAAAAAAI/AAAAAAAAAAA/AMZuucntDYOCqqSl4oErFktry1Q8QEcKFA/s96-c/photo.jpg");
+            console.log(res);
+        }
+    }
+
+    useEffect( 
+        () => {
+            temp();
+        }, [userContract]
+    )
+
     return (
         <>
         <div>
             {user ?
                 <div className="bounties" style={{"fontSize" : "15px"}}>
-                    <Tabs defaultActiveKey="active">
-                        <Tab eventKey="active" title="Active">
-                            <UnitsList unitsList={activeBountiesList} unitType='bounty' />
-                        </Tab>
-                        <Tab eventKey="delisted" title="Inactive">
-                            <UnitsList unitsList={inactiveBountiesList} unitType='bounty' />
-                        </Tab>
-                        <Tab eventKey="new" title="Create">
-                            <ItemCreate registerItem={registerBounty} isBounty={true}/>
-                        </Tab>
-                        <Tab eventKey="pending" title="Pending">
-                            <BountiesPending />
-                        </Tab>
-                    </Tabs>
+                    <BountiesTabs contract={bountiesContract} />
+                    <Toaster
+                        position="top-right"
+                        toastOptions={{
+                            loading: {
+                                iconTheme: {
+                                    primary: '#06AA2F',
+                                }
+                            }
+                        }}
+                    />
                 </div>
                 : loading 
                     ? <CircularProgress color={'primary'} />
