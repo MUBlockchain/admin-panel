@@ -78,7 +78,7 @@ const AnnouncementList = () => {
     const pageLimit = 5;
     const [ page, setPage ] = useState(1);
     const monthLabels = ["Jan", "Feb", "Mar", "Apr",  "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"]
-    
+
     const getData = async () => {
         if (!contract) return;
         const data = await contract.getAnnouncements();
