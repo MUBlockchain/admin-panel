@@ -1,46 +1,75 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import { UserContext } from '../auth'
 import { Tabs, Tab } from 'react-bootstrap'
 import ItemCreate from './ItemCreate'
 import ItemList from './ItemList'
 import UnitsList from '../units/UnitsList'
+import { useItems } from '../hooks'
+import { ExpandAwsUrl, ShortenAwsUrl } from '../image-upload-utils'
 
 const ItemsBody = () => {
     const { user, loading, login } = useContext(UserContext)
-    const [ itemList, setItemList ] = useState([{
-        name: "Trip to Conference",
-        imageURL: "https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fmubc.io%2Fstatic%2FMUBC%2520Logo%2520Big%2520Letters%2520(vector)%2520copy%25202-315c175009080bf630ce3841d97fb6c3.png&f=1&nofb=1",
-        imageUrl: "https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fmubc.io%2Fstatic%2FMUBC%2520Logo%2520Big%2520Letters%2520(vector)%2520copy%25202-315c175009080bf630ce3841d97fb6c3.png&f=1&nofb=1",
-        cost: 100,
-        isInfinite: false,
-        quantity: 5,
-        description: "All expenses paid trip to regional Blockchain Conference.",
-        isActive: true,
-        id: 0
-    },
-    {
-        name: "Meet with Professional",
-        imageURL: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fpreview.free3d.com%2Fimg%2F2014%2F05%2F1688666439835190495%2F9vdaf5x3-900.jpg&f=1&nofb=1",
-        imageUrl: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fpreview.free3d.com%2Fimg%2F2014%2F05%2F1688666439835190495%2F9vdaf5x3-900.jpg&f=1&nofb=1",
-        cost: 10,
-        isInfinite: true,
-        quantity: -1,
-        description: "As said by the name.",
-        isActive: false,
-        id: 1
-    }])
+    const itemsContract = useItems();
+
+    const [ itemList, setItemList ] = useState([])
+
+    const getItems = async () => {
+        if (!itemsContract) return;
+        const res = await itemsContract.getItems();
+        const tempItems = [];
+
+        const len = parseInt(res._itemNonce._hex);
+        for(let i = 0; i < len; i++) {
+            tempItems.push(new Item(res._titles[i],
+                                    res._descriptions[i],
+                                    ExpandAwsUrl(res._imageUrls[i]),
+                                    parseInt(res._costs[i]._hex),
+                                    res._infinites[i],
+                                    parseInt(res._quantities[i]._hex),
+                                    res._actives[i],
+                                    i + 1)); // contract item ids start at 1
+        }
+
+        setItemList(tempItems);
+    }
+
+    useEffect(() => {
+        getItems();
+    }, [ user ]);
 
     const [ key, setKey ] = useState("active")
 
-    const registerItem = item => {
-        item.id = itemList.length
-        const tempList = itemList.concat([item])
-        setItemList(tempList)
+    const addItem = async (item) => {
+        const res = await itemsContract.addItem(item.name,
+                                                item.description,
+                                                ShortenAwsUrl(item.imageUrl),
+                                                item.cost,
+                                                item.isInfinite,
+                                                item.quantity)
 
-        // TODO: Register new item with contract or whatever controls it and navigate *after* confirmation of register
+        item.id = res
+        const tempItems = itemList.concat([item])
+        setItemList(tempItems)
 
-        setTimeout(() => setKey("active"), 1000)
-        console.log(tempList)
+        setKey("active")
+    }
+
+    const delistItem = (id) => {
+        itemsContract.delistItem(id)
+
+        // just incase reality breaks and the id does not line up with the index
+        const index = itemList.findIndex(i => i.id == id);
+        const tempItems = itemList.concat([]);
+        const item = itemList[index];
+        tempItems[index] = new Item(item.name,
+                                       item.description,
+                                       item.imageUrl,
+                                       item.cost,
+                                       item.isInfinite,
+                                       item.quantity,
+                                       false,
+                                       item.id)
+        setItemList(tempItems);
     }
 
     return (
@@ -50,7 +79,7 @@ const ItemsBody = () => {
                     <Tabs activeKey={key} onSelect={k => setKey(k)}>
                         <Tab eventKey="active" title="Active">
                             <div style={{"margin": "20px"}}>
-                                <UnitsList unitsList={itemList.filter(i => i.isActive)} unitType="item" />
+                                <UnitsList unitsList={itemList.filter(i => i.isActive)} unitType="item" handleDelist={delistItem}/>
                             </div>
                         </Tab>
                         <Tab eventKey="inactive" title="Inactive">
@@ -60,7 +89,7 @@ const ItemsBody = () => {
                         </Tab>
                         <Tab eventKey="create" title="Create">
                             <div style={{"margin": "20px"}}>
-                                <ItemCreate registerItem={registerItem}/>
+                                <ItemCreate registerItem={addItem}/>
                             </div>
                         </Tab>
                     </Tabs>
@@ -71,6 +100,19 @@ const ItemsBody = () => {
             }
         </div>
     )
+}
+
+class Item {
+    constructor(title, description, imageUrl, cost, infinite, quantity, active, id) {
+        this.name = title;
+        this.description = description;
+        this.imageUrl = imageUrl;
+        this.cost = cost;
+        this.isInfinite = infinite;
+        this.quantity = quantity;
+        this.isActive = active;
+        this.id = id;
+    }
 }
 
 export default ItemsBody

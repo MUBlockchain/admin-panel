@@ -13,9 +13,9 @@ const UsersBody = () => {
     const getUsers = async () => {
         if (!usersContract) return;
         const res = await usersContract.getUsers();
-        let tempUsers = [];
+        const tempUsers = [];
 
-        let len = parseInt(res._nonce._hex)
+        const len = parseInt(res._nonce._hex)
         for(let i = 0; i < len; i++) {
             tempUsers.push(new User(res._names[i],
                                     res._imageUrls[i],
@@ -24,9 +24,6 @@ const UsersBody = () => {
         }
 
         setUserList(tempUsers)
-
-        console.log(res);
-        console.log(tempUsers);
     }
 
     const promoteUser = async () => {
