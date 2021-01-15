@@ -15,7 +15,8 @@ const UsersBody = () => {
         const res = await usersContract.getUsers();
         let tempUsers = [];
 
-        for(let i in res._names) {
+        let len = parseInt(res._nonce._hex)
+        for(let i = 0; i < len; i++) {
             tempUsers.push(new User(res._names[i],
                                     res._imageUrls[i],
                                     res._roles[i],
