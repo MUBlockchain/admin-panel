@@ -95,12 +95,13 @@ export default function UserContextProvider({ children }) {
           typeOfLogin: 'google',
           clientId: process.env.GATSBY_GOOGLE_CLIENT_ID
         })
+        
         const { publicAddress, privateKey, userInfo: info } = userInfo
         const { name, profileImage } = info
         setUser({ publicAddress, privateKey, name, profileImage })
-        const { wallet, ethProvider } = await makeProviders(privateKey)
+        const { wallet, etherProvider } = await makeProviders(privateKey)
         setEthers(wallet)
-        setGSNProvider(ethProvider)
+        setGSNProvider(etherProvider)
         createSession({ publicAddress, privateKey, name, profileImage })
       } catch (error) {
         console.log(error)
@@ -128,13 +129,11 @@ export default function UserContextProvider({ children }) {
 	    paymasterAddress
     }
     const gsnProvider = await RelayProvider.newProvider({ provider: web3Provider, config }).init()
-    console.log("PROVIDER: ", gsnProvider)
     // Initialize provider before continuing
-    //await gsnProvider.init()
     gsnProvider.addAccount({address: wallet.address, privateKey: Buffer.from(privateKey, 'hex') })
 
     // Now create a provider that will pay for our contract's transactions
-    const etherProvider= new Ethers.providers.Web3Provider(gsnProvider)
+    const etherProvider = new Ethers.providers.Web3Provider(gsnProvider)
     return { wallet, etherProvider }
   }
 

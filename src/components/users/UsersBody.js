@@ -32,8 +32,9 @@ const UsersBody = () => {
     }
 
     useEffect(() => {
+        if(userList.length) return
         getUsers();
-    }, [ user ])
+    }, [ usersContract ])
 
     return (
         <div>

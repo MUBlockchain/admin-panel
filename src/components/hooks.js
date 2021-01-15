@@ -11,7 +11,7 @@ const Bounties = require('../abi/Bounties.json')
  */
 export const useAnnouncements = () => {
     const { user, ethers, gsnProvider } = useContext(UserContext)
-    if(!user || !ethers) return null
+    if(!user || !ethers || !gsnProvider) return null
 
     // Determine Ethereum network to connect to
     const chainId = ethers.provider._network.chainId
@@ -20,22 +20,27 @@ export const useAnnouncements = () => {
     // Connect to the contract instance 
     const contract = new Ethers.Contract(address, Announcements.abi, ethers)
     // Enable Gas Station Network for contract instance and return object
-    return contract.connect(gsnProvider.getSigner(user.publicAddress))
+    // return contract.connect(gsnProvider.getSigner(user.publicAddress))
+    return contract
 }
 
 export const useUsers = () => {
     const { user, ethers, gsnProvider } = useContext(UserContext)
-    if(!user || !ethers) return null
-
+    console.log('Above first return')
+    if(!user || !ethers || !gsnProvider) return null
+    console.log('Nothing was null')
     const chainId = ethers.provider._network.chainId
     const address = Users.networks[chainId].address
     const contract = new Ethers.Contract(address, Users.abi, ethers)
-    return contract.connect(gsnProvider.getSigner(user.publicAddress))
+    console.log('Contract: ', contract)
+    const connectedContract = contract.connect(gsnProvider.getSigner(user.publicAddress))
+    console.log('Connected Contract: ', connectedContract)
+    return connectedContract
 }
 
 export const useItems = () => {
     const { user, ethers, gsnProvider } = useContext(UserContext)
-    if(!user || !ethers) return null
+    if(!user || !ethers || !gsnProvider) return null
 
     const chainId = ethers.provider._network.chainId
     const address = Items.networks[chainId].address
@@ -45,7 +50,7 @@ export const useItems = () => {
 
 export const useBounties = () => {
     const { user, ethers, gsnProvider } = useContext(UserContext)
-    if(!user || !ethers) return null
+    if(!user || !ethers || !gsnProvider) return null
 
     const chainId = ethers.provider._network.chainId
     const address = Bounties.networks[chainId].address

@@ -35,7 +35,7 @@ const ItemsBody = () => {
 
     useEffect(() => {
         getItems();
-    }, [ user ]);
+    }, [ user, itemsContract ]);
 
     const [ key, setKey ] = useState("active")
 
