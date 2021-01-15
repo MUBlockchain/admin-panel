@@ -7,10 +7,15 @@ const UserItem = (props) => {
 
     const [ showModal, setShowModal ] = useState(false);
 
+    const promoteUser = () => {
+        props.promoteUser()
+        setShowModal(false)
+    }
+
     return (
         <>
             <Paper className="user-card">
-                <img className="user-image" src={props.user.imageURL} alt={props.user.name + "'s Profile Picture"}/>
+                <img className="user-image" src={props.user.imageUrl} alt={props.user.name + "'s Profile Picture"}/>
                 <span className="user-display-name">{props.user.name}</span>
                 {props.user.isAdministrator
                   ? null
@@ -28,7 +33,7 @@ const UserItem = (props) => {
                     <Row style={{"justifyContent": "space-around"}}>
                         <Col sm={3}>
                             <Row>
-                                <img className="user-image" src={props.user.imageURL} alt={props.user.name + "'s Profile Picture"}/>
+                                <img className="user-image" src={props.user.imageUrl} alt={props.user.name + "'s Profile Picture"}/>
                             </Row>
                         </Col>
                         <Col sm={7}>
@@ -36,7 +41,7 @@ const UserItem = (props) => {
                                 Are you sure you want to grant {props.user.name} administrative access?
                             </Row>
                             <Row style={{"justifyContent": "space-around", "marginTop": "5px"}}>
-                                <Button variant="success" size="small" onClick={() => setShowModal(false)}>
+                                <Button variant="success" size="small" onClick={promoteUser}>
                                     Confirm
                                 </Button>
                                 <Button variant="secondary" size="small" onClick={() => setShowModal(false)}>
