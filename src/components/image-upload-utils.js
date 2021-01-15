@@ -61,3 +61,48 @@ export const UploadToAws = async (file, callback) => {
 
 export const ShortenAwsUrl = url => url.replace(IMAGE_ENDPOINT_URL_BASE, "")
 export const ExpandAwsUrl = url => IMAGE_ENDPOINT_URL_BASE + url
+
+/*
+// TODO: Move documentation elsewhere
+import { ImageUploadButton, UploadToAws, ExpandAwsUrl, ShortenAwsUrl } from './../image-upload-utils'
+
+///// Using ImageUploadButton
+
+// Add this element to create a clickable button to upload images
+<ImageUploadButton onChange={handleSelectedFileChange}
+                   imageRef={imageRef} // OPTIONAL
+                   />
+
+// onChange event is fired when a file is selected, it passes the file object to the handeler
+const [ selectedFile, setSelectedFile ] = useState()
+const handleSelectedFileChange = file => {
+    setSelectedFile(file)
+}
+
+// OPTIONAL imageRef is used to immediately update an <img> to the image the user selected
+const imageRef = React.createRef() // create ref
+<img src="..." ref={imageRef}/>
+<ImageUploadButton onChange={handleSelectedFileChange} imageRef={imageRef} />
+
+// You can also supply your own elements inside to override the default styling
+<ImageUploadButton>
+    <Button>
+        ...
+    </Button>
+</ImageUploadButton>
+
+
+///// Using UploadToAws
+
+// Call UploadToAws and pass the file to be uploaded along with a callback for when the url of the image is received
+// Side note: the url is automatically shortened to only be the image filename. This saves space in the contarct. To get the original
+// url, use ExpandAwsUrl
+UploadToAws(selectedFile, url => {
+    contract.makeBountry({url}) // example use
+    console.log(ExpandAwsUrl(url))
+})
+
+// An expanded url can also be shortened by using ShortenAwsUrl
+console.log(ShortenAwsUrl(longUrl))
+
+*/

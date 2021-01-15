@@ -2,10 +2,10 @@ import React, { useState } from 'react'
 import { Form, Button } from 'react-bootstrap'
 import toast, { Toaster } from 'react-hot-toast'
 import $ from 'jquery'
-import { useContract } from '../hooks'
+import { useAnnouncements } from '../hooks'
 
 const AnnouncementEdit = () => {
-    const contract = useContract();
+    const contract = useAnnouncements();
     const [ pin, setPin ] = useState(false);
     const [ loading, setLoading ] = useState(false);
 

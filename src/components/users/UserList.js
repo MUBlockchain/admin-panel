@@ -1,20 +1,25 @@
 import React, { useState } from 'react'
-import { Row, Col, Modal } from 'react-bootstrap'
-import { Paper, Button, InputBase } from '@material-ui/core'
+import { Row, Col, Modal, Button } from 'react-bootstrap'
+import { Paper, InputBase } from '@material-ui/core'
 import './users.css'
 
 const UserItem = (props) => {
 
     const [ showModal, setShowModal ] = useState(false);
 
+    const promoteUser = () => {
+        props.promoteUser()
+        setShowModal(false)
+    }
+
     return (
         <>
             <Paper className="user-card">
-                <img className="user-image" src={props.user.imageURL} alt={props.user.name + "'s Profile Picture"}/>
+                <img className="user-image" src={props.user.imageUrl} alt={props.user.name + "'s Profile Picture"}/>
                 <span className="user-display-name">{props.user.name}</span>
                 {props.user.isAdministrator
                   ? null
-                  : <Button style={{"backgroundColor": "#1e1", "marginTop": "2px"}} variant="contained" size="small" onClick={() => setShowModal(true)}>
+                  : <Button variant="danger" size="small" onClick={() => setShowModal(true)}>
                         Promote
                     </Button>
                 }
@@ -28,7 +33,7 @@ const UserItem = (props) => {
                     <Row style={{"justifyContent": "space-around"}}>
                         <Col sm={3}>
                             <Row>
-                                <img className="user-image" src={props.user.imageURL} alt={props.user.name + "'s Profile Picture"}/>
+                                <img className="user-image" src={props.user.imageUrl} alt={props.user.name + "'s Profile Picture"}/>
                             </Row>
                         </Col>
                         <Col sm={7}>
@@ -36,10 +41,10 @@ const UserItem = (props) => {
                                 Are you sure you want to grant {props.user.name} administrative access?
                             </Row>
                             <Row style={{"justifyContent": "space-around", "marginTop": "5px"}}>
-                                <Button style={{"backgroundColor": "#1e1", "color": "#eee"}} variant="contained" size="small" onClick={() => setShowModal(false)}>
+                                <Button variant="success" size="small" onClick={promoteUser}>
                                     Confirm
                                 </Button>
-                                <Button style={{"backgroundColor": "#e11", "color": "#eee"}} variant="contained" size="small" onClick={() => setShowModal(false)}>
+                                <Button variant="secondary" size="small" onClick={() => setShowModal(false)}>
                                     Cancel
                                 </Button>
                             </Row>

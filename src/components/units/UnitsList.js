@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Row, Col, Modal, Card, Image, Button } from 'react-bootstrap'
 import { Paper, InputBase } from '@material-ui/core';
 import './unit.css'
@@ -40,7 +40,16 @@ const Unit = (props) => {
                             </div>
                             <div>Quantity: {props.data?.isInfinite ? 'Infinite' : props.data?.quantity}</div>
                             {props.data?.isActive 
-                                ? <Button variant="success" style={{"marginTop": "15px"}}>DELIST</Button>
+                                ? <Button 
+                                    variant="success" 
+                                    style={{"marginTop": "15px"}}
+                                    onClick={() => { 
+                                        props.handleDelist(props.data?.id, props.pos); 
+                                        handleClose();
+                                    }}
+                                >
+                                    DELIST
+                                </Button>
                                 : <Button variant="secondary" style={{"marginTop": "15px"}} disabled>DELISTED</Button>}
                         </Col>
                     </Row>
@@ -55,16 +64,23 @@ const Unit = (props) => {
 
 const UnitsList = (props) => {
     const [ listToDisplay, setListToDisplay ] = useState(props.unitsList);
+
+    useEffect(
+        () => {
+            setListToDisplay(props.unitsList);
+        }, [ props.unitsList ]
+    );
+
     const displayList = listToDisplay.map((_, i) => 
-            {   
-                return i % 4 === 0 && 
-                <Row key={i} className="unitRow">
-                    {listToDisplay.slice(i, i + 4 < listToDisplay.length ? i + 4 : listToDisplay.length).map((unit, i) => (
-                        <Col key={i} md={3}><Unit data={unit} type={props.unitType || 'bounty'} /></Col>
-                    ))}
-                </Row>
-            }
-        )
+        {   
+            return i % 4 === 0 && 
+            <Row key={i} className="unitRow">
+                {listToDisplay.slice(i, i + 4 < listToDisplay.length ? i + 4 : listToDisplay.length).map((unit, j) => (
+                    <Col key={j} md={3}><Unit data={unit} pos={i + j} handleDelist={props.handleDelist} type={props.unitType || 'bounty'} /></Col>
+                ))}
+            </Row>
+        }
+    )
 
     return (
         <>

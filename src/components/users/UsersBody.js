@@ -1,30 +1,39 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { UserContext } from '../auth'
 import { Tabs, Tab } from 'react-bootstrap'
 import UserList from './UserList'
+import { useUsers } from '../hooks'
 
 const UsersBody = () => {
-    const { user, loading, login } = useContext(UserContext)
-    const [ userList, setUserList ] = useState([{
-        name: "User 1",
-        imageURL: "https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.tutorialsscripts.com%2Ffree-icons%2Foption-icons%2Fbrown-option-icon-96-x-96.png&f=1&nofb=1",
-        isAdministrator: true
-    },
-    {
-        name: "Moe Smith",
-        imageURL: "https://lh3.googleusercontent.com/-opTvTNSzvvg/AAAAAAAAAAI/AAAAAAAAAAA/AMZuucmKTEiiQnTrlcxfpRSV7HG34NjDtA/s96-c/photo.jpg",
-        isAdministrator: false
-    },
-    {
-        name: "Harry Smith",
-        imageURL: "https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.tutorialsscripts.com%2Ffree-icons%2Fprogramming-language%2Fc-icons%2Fblue-c-language-icon-96-x-96.png&f=1&nofb=1",
-        isAdministrator: false
-    },
-    {
-        name: "Harry Arse",
-        imageURL: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2F1w5n8s20evgs15e7ckue11c1-wpengine.netdna-ssl.com%2Fwp-content%2Fuploads%2F2017%2F11%2FDepositphotos_85415802_m-2015-80x80.jpg&f=1&nofb=1",
-        isAdministrator: false
-    }])
+    const { user, loading, login } = useContext(UserContext);
+    const usersContract = useUsers();
+
+    const [ userList, setUserList ] = useState([]);
+
+    const getUsers = async () => {
+        if (!usersContract) return;
+        const res = await usersContract.getUsers();
+        const tempUsers = [];
+
+        const len = parseInt(res._nonce._hex)
+        for(let i = 0; i < len; i++) {
+            tempUsers.push(new User(res._names[i],
+                                    res._imageUrls[i],
+                                    res._roles[i],
+                                    res._balances[i]));
+        }
+
+        setUserList(tempUsers)
+    }
+
+    const promoteUser = async () => {
+        // TODO: figure out how to get user address to pass to promote
+        // const res = await usersContract.promote()
+    }
+
+    useEffect(() => {
+        getUsers();
+    }, [ user ])
 
     return (
         <div>
@@ -38,7 +47,7 @@ const UsersBody = () => {
                         </Tab>
                         <Tab eventKey="members" title="Members">
                             <div style={{"margin": "20px"}}>
-                                <UserList users={userList.filter(u => !u.isAdministrator)} />
+                                <UserList users={userList.filter(u => !u.isAdministrator)} promoteUser={promoteUser} />
                             </div>
                         </Tab>
                     </Tabs>
@@ -49,6 +58,15 @@ const UsersBody = () => {
             }
         </div>
     )
+}
+
+class User {
+    constructor(name, imageUrl, role, balance) {
+        this.name = name;
+        this.imageUrl = imageUrl;
+        this.isAdministrator = parseInt(role) == 2 ? true : false;
+        this.balance = parseInt(balance);
+    }
 }
 
 export default UsersBody
