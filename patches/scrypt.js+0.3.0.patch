@@ -1,0 +1,11 @@
+diff --git a/node_modules/scrypt.js/index.js b/node_modules/scrypt.js/index.js
+index 363eb3a..d4e79ac 100644
+--- a/node_modules/scrypt.js/index.js
++++ b/node_modules/scrypt.js/index.js
+@@ -1,5 +1,5 @@
+ try {
+-  module.exports = require('./node')
++  module.exports = require('./js')
+ } catch (e) {
+   module.exports = require('./js')
+ }

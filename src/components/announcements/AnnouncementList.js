@@ -106,7 +106,7 @@ const AnnouncementList = () => {
     useEffect(
         () => {
             getData();
-        }, []);
+        }, [contract]);
 
     useEffect(
         () => {

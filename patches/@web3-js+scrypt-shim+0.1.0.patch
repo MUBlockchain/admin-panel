@@ -1,0 +1,13 @@
+diff --git a/node_modules/@web3-js/scrypt-shim/src/index.js b/node_modules/@web3-js/scrypt-shim/src/index.js
+index 561f83d..c29ab2f 100644
+--- a/node_modules/@web3-js/scrypt-shim/src/index.js
++++ b/node_modules/@web3-js/scrypt-shim/src/index.js
+@@ -31,7 +31,7 @@ var tryScryptPkg = function() {
+   return scryptPkg;
+ };
+ 
+-var hasNodeBuiltin = semver.Range('>=' + NODE_MIN_VER_WITH_BUILTIN_SCRYPT).test(process.version);
++var hasNodeBuiltin = semver.satisfies(process.version, `>=${NODE_MIN_VER_WITH_BUILTIN_SCRYPT}`);
+ 
+ if (hasNodeBuiltin) {
+   crypto = require('crypto');

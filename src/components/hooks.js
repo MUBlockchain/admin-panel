@@ -10,40 +10,52 @@ const Bounties = require('../abi/Bounties.json')
  *  Custom hook that connects to an instance of the simple storage contract
  */
 export const useAnnouncements = () => {
-    const { user, ethers } = useContext(UserContext)
-    if(!user || !ethers) return null
+    const { user, ethers, gsnProvider } = useContext(UserContext)
+    if(!user || !ethers || !gsnProvider) return null
 
     // Determine Ethereum network to connect to
     const chainId = ethers.provider._network.chainId
     // Connect to deployed contract, if it exists
     const address = Announcements.networks[chainId].address
-    // Connect to the contract instance and return so that it is accessible throughout app
-    return new Ethers.Contract(address, Announcements.abi, ethers)
+    // Connect to the contract instance 
+    const contract = new Ethers.Contract(address, Announcements.abi, ethers)
+    // Enable Gas Station Network for contract instance and return object
+    // return contract.connect(gsnProvider.getSigner(user.publicAddress))
+    return contract
 }
 
 export const useUsers = () => {
-    const { user, ethers } = useContext(UserContext)
-    if(!user || !ethers) return null
-
+    const { user, ethers, gsnProvider } = useContext(UserContext)
+    console.log('Above first return')
+    if(!user || !ethers || !gsnProvider) return null
+    console.log('Nothing was null')
     const chainId = ethers.provider._network.chainId
     const address = Users.networks[chainId].address
-    return new Ethers.Contract(address, Users.abi, ethers)
+    const contract = new Ethers.Contract(address, Users.abi, ethers)
+    console.log('Contract: ', contract)
+    const connectedContract = contract.connect(gsnProvider.getSigner(user.publicAddress))
+    console.log('Connected Contract: ', connectedContract)
+    return connectedContract
 }
 
 export const useItems = () => {
-    const { user, ethers } = useContext(UserContext)
-    if(!user || !ethers) return null
+    const { user, ethers, gsnProvider } = useContext(UserContext)
+    if(!user || !ethers || !gsnProvider) return null
 
     const chainId = ethers.provider._network.chainId
     const address = Items.networks[chainId].address
-    return new Ethers.Contract(address, Items.abi, ethers)
+    const contract = new Ethers.Contract(address, Items.abi, ethers)
+    return contract.connect(gsnProvider.getSigner(user.publicAddress))
 }
 
 export const useBounties = () => {
-    const { user, ethers } = useContext(UserContext)
-    if(!user || !ethers) return null
+    const { user, ethers, gsnProvider } = useContext(UserContext)
+    if(!user || !ethers || !gsnProvider) return null
 
     const chainId = ethers.provider._network.chainId
     const address = Bounties.networks[chainId].address
-    return new Ethers.Contract(address, Bounties.abi, ethers)
+    const contract = new Ethers.Contract(address, Bounties.abi, ethers)
+    let x = contract.connect(gsnProvider.getSigner(user.publicAddress))
+    console.log("FLAG: ", x)
+    return x
 }

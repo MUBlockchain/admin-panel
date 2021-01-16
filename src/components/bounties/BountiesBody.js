@@ -22,6 +22,7 @@ const BountiesTabs = (props) => {
         let inactive = [];
 
         for (let i = 0; i < res._bountyNonce.toNumber(); i++) {
+            console.log('test')
             const bounty = {
                 id: (i + 1),
                 name: res._titles[i],
@@ -99,8 +100,10 @@ const BountiesTabs = (props) => {
     }
 
     useEffect(() => {
+        if(activeBounties.length || inactiveBounties.length) return
+        console.log('Line 103 getting Bounties')
         getBountiesList();
-    }, []);
+    }, [props.contract]);
 
     return (
         <Tabs defaultActiveKey="active">
