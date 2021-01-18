@@ -32,9 +32,9 @@ const Layout = ({ children }) => {
         <Navigation />
         <main>{children}</main>
         <footer className="Footer">
-          © {new Date().getFullYear()}, Built by Ian Brighton
+          © {new Date().getFullYear()}, Built by Miami University Blockchain Club
           {` `}
-          <a href="https://www.linkedin.com/in/ian-brighton/">@LinkedIn</a>
+          <a href="https://www.mubc.io">@Website</a>
         </footer>
       </div>
     </>
