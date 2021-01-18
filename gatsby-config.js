@@ -1,8 +1,8 @@
 module.exports = {
   siteMetadata: {
-    title: `Gatsby Torus Direct Authentication`,
-    description: `Gatsby demo of Torus Direct Authentication SDK`,
-    author: `@mubc`,
+    title: `MUBC OrgToken Administrator Panel`,
+    description: `Administrative capabilities for MUBC OrgToken Incentive Contracts`,
+    author: `@mublockchain`,
   },
   plugins: [
     `gatsby-plugin-offline`,
