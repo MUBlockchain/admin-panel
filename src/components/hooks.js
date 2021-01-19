@@ -26,16 +26,11 @@ export const useAnnouncements = () => {
 
 export const useUsers = () => {
     const { user, ethers, gsnProvider } = useContext(UserContext)
-    console.log('Above first return')
     if(!user || !ethers || !gsnProvider) return null
-    console.log('Nothing was null')
     const chainId = ethers.provider._network.chainId
     const address = Users.networks[chainId].address
     const contract = new Ethers.Contract(address, Users.abi, ethers)
-    console.log('Contract: ', contract)
-    const connectedContract = contract.connect(gsnProvider.getSigner(user.publicAddress))
-    console.log('Connected Contract: ', connectedContract)
-    return connectedContract
+    return contract.connect(gsnProvider.getSigner(user.publicAddress))
 }
 
 export const useItems = () => {

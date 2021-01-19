@@ -137,7 +137,7 @@ const BountiesPending = (props) => {
 
     useEffect(() => {
         getBountyReqs();
-    }, []); 
+    }, [props.contract]); 
 
     const handleBountyApply = async () => {
         if (!props.contract) return;
