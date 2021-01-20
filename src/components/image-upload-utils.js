@@ -41,16 +41,14 @@ export const ImageUploadButton = props => {
     )
 }
 
-const API_URL_BASE = "http://localhost:3000"
-export const IMAGE_ENDPOINT_URL_BASE = "https://mubc-api-image.s3.us-east-2.amazonaws.com/"
 export const UploadToAws = async (file, callback) => {
     if (typeof callback != "function") {
         console.error("A callback must be provided as the second parameter")
     }
 
-    let body = new FormData(), headers = {} //fetch will automatically add content header
+    let body = new FormData(), headers = {"X-Authentication": localStorage.getItem('Id Token')} //fetch will automatically add content header
     body.append("image", file)
-    const resp = await fetch(API_URL_BASE + "/api/image", {method: "POST", headers, body})
+    const resp = await fetch(`${process.env.GATSBY_API_BASE_URL}/api/image`, {method: "POST", headers, body})
     if (!resp.ok) {
         console.error("Server responded with error: " + resp.status + "\n" + resp)
         return null
@@ -59,8 +57,8 @@ export const UploadToAws = async (file, callback) => {
     callback(url)
 }
 
-export const ShortenAwsUrl = url => url.replace(IMAGE_ENDPOINT_URL_BASE, "")
-export const ExpandAwsUrl = url => IMAGE_ENDPOINT_URL_BASE + url
+export const ShortenAwsUrl = url => url.replace(`${process.env.GATSBY_S3_ENDPOINT}/`, "")
+export const ExpandAwsUrl = url => `${process.env.GATSBY_S3_ENDPOINT}/${url}`
 
 /*
 // TODO: Move documentation elsewhere

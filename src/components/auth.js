@@ -23,8 +23,7 @@ export default function UserContextProvider({ children }) {
   const [gsnProvider, setGSNProvider] = useState(null)
 
   useEffect(() => {
-    // Checks to see if items exist in local storage. If so then the session is
-    // restored
+    // Checks to see if items exist in local storage. If so then the session is restored
     if (localStorage.getItem('Public Address') !== null) restoreSession()
   }, [])
 
@@ -41,18 +40,19 @@ export default function UserContextProvider({ children }) {
 
   /**
    *  Create a logged in session by storing user information inside of local storage.
-   * 
+   *
    * @param {*} info User info object
    */
   const createSession = info => {
-    const { publicAddress, privateKey, name, profileImage } = info
+    const { publicAddress, privateKey, name, profileImage, idToken } = info
     localStorage.setItem('Public Address', publicAddress)
     localStorage.setItem('Private Key', privateKey)
     localStorage.setItem('Name', name)
     localStorage.setItem('Profile Image', profileImage)
+    localStorage.setItem('Id Token', idToken)
   }
 
-  /** 
+  /**
    *  Restores a previous logged in state from local storage.
    */
   const restoreSession = async () => {
@@ -60,9 +60,18 @@ export default function UserContextProvider({ children }) {
     const privateKey = localStorage.getItem('Private Key')
     const name = localStorage.getItem('Name')
     const profileImage = localStorage.getItem('Profile Image')
+    const idToken = localStorage.getItem('Id Token')
 
-    // Set new user from data retrived from local storage
-    setUser({ publicAddress, privateKey, name, profileImage })
+    // Set user from data retrived from local storage
+    setUser({ publicAddress, privateKey, name, profileImage, idToken })
+
+    // Validate id token and logout if invalid, done after setUser to prevent flashing of log in screen
+    const resp = await fetch(`${process.env.GATSBY_API_BASE_URL}/api/signin?token=${idToken}`)
+    if(!resp.ok) {
+        logout()
+        return
+    }
+
     const {wallet, etherProvider} = await makeProviders(privateKey)
     setEthers(wallet)
     setGSNProvider(etherProvider)
@@ -76,6 +85,7 @@ export default function UserContextProvider({ children }) {
     localStorage.removeItem('Private Key')
     localStorage.removeItem('Name')
     localStorage.removeItem('Profile Image')
+    localStorage.removeItem('Id Token')
     setUser(null)
   }
 
@@ -95,14 +105,14 @@ export default function UserContextProvider({ children }) {
           typeOfLogin: 'google',
           clientId: process.env.GATSBY_GOOGLE_CLIENT_ID
         })
-        
+
         const { publicAddress, privateKey, userInfo: info } = userInfo
-        const { name, profileImage } = info
-        setUser({ publicAddress, privateKey, name, profileImage })
+        const { name, profileImage, idToken } = info
+        setUser({ publicAddress, privateKey, name, profileImage, idToken })
         const { wallet, etherProvider } = await makeProviders(privateKey)
         setEthers(wallet)
         setGSNProvider(etherProvider)
-        createSession({ publicAddress, privateKey, name, profileImage })
+        createSession({ publicAddress, privateKey, name, profileImage, idToken })
       } catch (error) {
         console.log(error)
       } finally {
