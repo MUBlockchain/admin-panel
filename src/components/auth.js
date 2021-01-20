@@ -66,7 +66,7 @@ export default function UserContextProvider({ children }) {
     setUser({ publicAddress, privateKey, name, profileImage, idToken })
 
     // Validate id token and logout if invalid, done after setUser to prevent flashing of log in screen
-    const resp = await fetch(`${process.env.API_BASE_URL}/api/signin?token=${idToken}`)
+    const resp = await fetch(`${process.env.GATSBY_API_BASE_URL}/api/signin?token=${idToken}`)
     if(!resp.ok) {
         logout()
         return
