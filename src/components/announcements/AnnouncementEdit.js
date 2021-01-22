@@ -1,40 +1,44 @@
 import React, { useState } from 'react'
 import { Form, Button } from 'react-bootstrap'
-import toast, { Toaster } from 'react-hot-toast'
+import toast from 'react-hot-toast'
 import $ from 'jquery'
-import { useAnnouncements } from '../hooks'
 
-const AnnouncementEdit = () => {
-    const contract = useAnnouncements();
-    const [ pin, setPin ] = useState(false);
-    const [ loading, setLoading ] = useState(false);
+const AnnouncementEdit = ({contract}) => {
+    const [ pin, setPin ] = useState(false)
+    const [ loading, setLoading ] = useState(false)
 
     const addAnnouncement = async () => {
-        if (!contract) return;
-        setLoading(true);
+        if (!contract) return
+        setLoading(true)
+        const loadingToast = toast.loading(
+            <span>Adding announcement...</span>
+        )
         try {
-            const loadingToast = toast.loading(
-                <div>Processing...</div>
-            );
             const tx = await contract.addAnnouncement($('#announcementTitle').val(), 
-                $('#announcementDesc').val(), pin);
-            const receipt = await tx.wait();
-            toast.remove(loadingToast);
-            toast.success(<div>Announcement added!</div>, {
+                $('#announcementDesc').val(), pin)
+            const receipt = await tx.wait()
+
+            toast.remove(loadingToast)
+            toast.success(<span>Announcement added!</span>, {
                 duration: 5000
-            });
+            })
+            $('#announcementForm').get(0).reset()
+            window.location.reload()
         } catch (error) {
-            toast.error(<div>An error has occurred. Please try again later.</div>);
-            console.log(error);
+            toast.remove(loadingToast)
+            toast.error(<span>Oops! An error has occurred...</span>,
+            {
+                duration: 5000
+            })
+            console.log(error)
         } finally {
-            setLoading(false);
-            $('#announcementForm').get(0).reset();
-            window.location.reload();
+            setLoading(false)
         }
     }
+    
     const handleSubmit = async (event) => {
-        event.preventDefault();
-        addAnnouncement();
+        event.preventDefault()
+        addAnnouncement()
     }
     
     return (
@@ -53,7 +57,7 @@ const AnnouncementEdit = () => {
                     <Form.Check 
                         type="checkbox" 
                         label="Pin announcement" 
-                        onClick={(event) => { setPin(event.target.checked); }}
+                        onClick={(event) => { setPin(event.target.checked) }}
                     />
                 </Form.Group>
                 <div style={{'textAlign': 'right'}}>
@@ -65,16 +69,6 @@ const AnnouncementEdit = () => {
                     </Button>
                 </div>
             </Form>
-            <Toaster
-                position="top-right"
-                toastOptions={{
-                    loading: {
-                        iconTheme: {
-                            primary: '#06AA2F',
-                        }
-                    }
-                }}
-            />
         </>
     )
 }

@@ -1,25 +1,27 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { UserContext } from '../auth'
 import { Tabs, Tab } from 'react-bootstrap'
-import CircularProgress from '@material-ui/core/CircularProgress'
+import LinearLoadingComponent from '../misc/Loading'
 import UnitsList from '../units/UnitsList'
 import BountiesPending from './BountiesPending'
 import ItemCreate from '../items/ItemCreate'
-import toast, { Toaster } from 'react-hot-toast'
-import { useBounties, useUsers } from '../hooks';
+import toast from 'react-hot-toast'
+import { useBounties } from '../hooks'
 import './bounties.css'
 
 const BountiesTabs = (props) => {
-    const [ submitting, setSubmitting ] = useState(false); 
-    const [ activeBounties, setActiveBounties ] = useState([]);
-    const [ inactiveBounties, setInactiveBounties ] = useState([]);
-    const [ listChanged, setListChanged ] = useState(false);
+    const [ submitting, setSubmitting ] = useState(false) 
+    const [ activeBounties, setActiveBounties ] = useState([])
+    const [ inactiveBounties, setInactiveBounties ] = useState([])
+    const [ listChanged, setListChanged ] = useState(false)
+    const [ loading, setLoading ] = useState(true)
 
     const getBountiesList = async () => {
-        if (!props.contract) return;
-        const res = await props.contract.getBounties();
-        let active = [];
-        let inactive = [];
+        if (!props.contract) return
+        setLoading(true)
+        const res = await props.contract.getBounties()
+        let active = []
+        let inactive = []
 
         for (let i = 0; i < res._bountyNonce.toNumber(); i++) {
             console.log('test')
@@ -33,32 +35,29 @@ const BountiesTabs = (props) => {
                 isInfinite: res._infinites[i],
                 quantity: res._quantities[i].toNumber(),
                 isManual: res._manuals[i]
-            };
+            }
             if (bounty.isActive) {
-                active.push(bounty);
+                active.push(bounty)
             } else {
-                inactive.push(bounty);
+                inactive.push(bounty)
             }
         }
 
-        setActiveBounties(active);
-        setInactiveBounties(inactive);
+        setActiveBounties(active)
+        setInactiveBounties(inactive)
+        setLoading(false)
     }
 
     const registerBounty = async (data) => {
-        if (!props.contract) return;
-        setSubmitting(true);
-        const loadingToast = toast.loading(
-            <span>Processing...</span>
-        );
-        try {
-            if (!data.name || !data.award) {
-                toast.remove(loadingToast);
-                toast.error(<span>Please enter bounty title and/or award.</span>);
-                setSubmitting(false);
-                return;
-            }
-            const tx = await props.contract.addBounty(
+        if (!props.contract) return
+        if (!data.name || !data.award) {
+            toast.error(<span>Please fill in bounty name and/or award</span>, {duration: 5000})
+            setSubmitting(false)
+            return
+        }
+
+        toast.promise(
+            props.contract.addBounty(
                 data.name,
                 data.description,
                 data.imageUrl,
@@ -67,101 +66,95 @@ const BountiesTabs = (props) => {
                 Number(data.quantity),
                 data.manual,
                 data.tweetId
-            );
-            const receipt = await tx.wait();
-            toast.remove(loadingToast);
-            toast.success(<span>Bounty successfully added!</span>, {
-                duration: 5000
-            });
-            
-            activeBounties.push(data);
-        } catch (error) {
-            toast.remove(loadingToast);
-            toast.error(<span>An error has occurred. Please try again later.</span>);
-            console.log(error);
-        } finally {
-            setSubmitting(false);
-            window.location.reload();
-        }
+            ), 
+            {
+                loading: () => {
+                    setSubmitting(true)
+                    return (<span>Adding bounty...</span>)
+                },
+                success: m => {
+                    setSubmitting(false)
+                    window.location.reload()
+                    return (<span>Bounty added!</span>)
+                },
+                error: e => {
+                    console.error(e)
+                    setSubmitting(false)
+                    return (<span>Oops! An error has occurred...</span>)
+                }
+            }
+        )
     }
 
-    const requestDelist = async (id) => {
-        if (!props.contract) return;
-        const tx = await props.contract.delistBounty(id);
-        console.log(tx);
+    const requestDelist = async (id, pos) => {
+        if (!props.contract) return
+        toast.promise(
+            props.contract.delistBounty(id), 
+            {
+                loading: <span>Delisting bounty...</span>,
+                success: m => {
+                    console.log('LINE 79', m)
+                    activeBounties[pos].isActive = false
+                    inactiveBounties.push(activeBounties.splice(pos, 1)[0])
+                    setListChanged(!listChanged)
+                    return (<span>Bounty delisted!</span>)
+                },
+                error: e => {
+                    console.error(e)
+                    return (<span>Oops! An error has occurred...</span>)
+                }
+            }
+        )
     }
 
     const delistBounty = (id, pos) => {
-        if (!props.contract) return;
-        requestDelist(id);
-        activeBounties[pos].isActive = false;
-        inactiveBounties.push(activeBounties.splice(pos, 1)[0]);
-        setListChanged(!listChanged);
+        requestDelist(id, pos)
     }
 
     useEffect(() => {
         if(activeBounties.length || inactiveBounties.length) return
-        console.log('Line 103 getting Bounties')
-        getBountiesList();
-    }, [props.contract]);
+        getBountiesList()
+    }, [props.contract])
 
     return (
-        <Tabs defaultActiveKey="active">
-            <Tab eventKey="active" title="Active">
-                <UnitsList key={listChanged} unitsList={activeBounties} unitType='bounty' handleDelist={delistBounty}/>
-            </Tab>
-            <Tab eventKey="inactive" title="Inactive">
-                <UnitsList key={listChanged} unitsList={inactiveBounties} unitType='bounty' />
-            </Tab>
-            <Tab eventKey="new" title="Create">
-                <ItemCreate registerItem={registerBounty} isBounty={true} loading={submitting}/>
-            </Tab>
-            <Tab eventKey="pending" title="Pending">
-                <BountiesPending contract={props.contract}/>
-            </Tab>
-        </Tabs>
+        
+        <>
+            {loading 
+                ? <LinearLoadingComponent text="Fetching data..." />
+                : <Tabs defaultActiveKey="active">
+                    <Tab eventKey="active" title="Active">
+                        <UnitsList key={listChanged} unitsList={activeBounties} 
+                            unitType='bounty' handleDelist={delistBounty} />
+                    </Tab>
+                    <Tab eventKey="inactive" title="Inactive">
+                        <UnitsList key={listChanged} unitsList={inactiveBounties} 
+                            unitType='bounty' />
+                    </Tab>
+                    <Tab eventKey="new" title="Create">
+                        <ItemCreate registerItem={registerBounty} isBounty={true} loading={submitting}/>
+                    </Tab>
+                    <Tab eventKey="pending" title="Pending">
+                        <BountiesPending contract={props.contract}/>
+                    </Tab>
+                </Tabs>
+            }
+        </>
     )
 }
 
 const BountiesBody = () => {
-    const { user, loading, login } = useContext(UserContext);
-    const bountiesContract = useBounties();
-    const userContract = useUsers();
-
-    const temp = async () => {
-        if (userContract) {
-            console.log('registering')
-            const res = await userContract.getUsers();
-            // const res = await userContract.enroll("Linh Nguyen", "1314032935415222272", "https://lh3.googleusercontent.com/-m7Fb_h6rfjE/AAAAAAAAAAI/AAAAAAAAAAA/AMZuucntDYOCqqSl4oErFktry1Q8QEcKFA/s96-c/photo.jpg");
-            console.log(res);
-        }
-    }
-
-    useEffect( 
-        () => {
-            temp();
-        }, [userContract]
-    )
+    const { user, loading, login } = useContext(UserContext)
+    const bountiesContract = useBounties()
 
     return (
         <>
         <div>
-            {user ?
-                <div className="bounties" style={{"fontSize" : "15px"}}>
+            {user && user.isAdmin
+                ? <div className="bounties" style={{"fontSize" : "15px"}}>
                     <BountiesTabs contract={bountiesContract} />
-                    <Toaster
-                        position="top-right"
-                        toastOptions={{
-                            loading: {
-                                iconTheme: {
-                                    primary: '#06AA2F',
-                                }
-                            }
-                        }}
-                    />
                 </div>
                 : loading 
-                    ? <CircularProgress color={'primary'} />
+                    ? <LinearLoadingComponent text="Logging you in..." />
                     : <><h3 style={{ "marginTop": "25px"}}>Log in to continue</h3> 
                     <div onClick={login} className="loginBtn">LOG IN</div></>
             }

@@ -3,24 +3,23 @@ import { Container, Row, Col } from 'react-bootstrap'
 import { Button, TextField, Switch, FormControlLabel } from '@material-ui/core'
 import { ImageUploadButton, UploadToAws, ExpandAwsUrl } from './../image-upload-utils'
 
-
 const ItemCreate = (props) => {
 
     const imageRef = React.createRef()
 
-    const [ isInfinite, setIsInfinite ] = useState(false);
+    const [ isInfinite, setIsInfinite ] = useState(false)
     const toggleInfinite = () => setIsInfinite(!isInfinite)
 
-    const [ quantity, setQuantity ] = useState("");
+    const [ quantity, setQuantity ] = useState("")
     const handleQuantityChange = e => {
-        const onlyNums = e.target.value.replace(/[^0-9]/g, '');
-        setQuantity(Number(onlyNums).toString());
+        const onlyNums = e.target.value.replace(/[^0-9]/g, '')
+        setQuantity(Number(onlyNums).toString())
     }
 
-    const [ cost, setCost ] = useState("");
+    const [ cost, setCost ] = useState("")
     const handleCostChange = e => {
-        const onlyNums = e.target.value.replace(/[^0-9]/g, '');
-        setCost(Number(onlyNums).toString());
+        const onlyNums = e.target.value.replace(/[^0-9]/g, '')
+        setCost(Number(onlyNums).toString())
     }
 
     const [ imageSrc, setImageSrc ] = useState("")
@@ -36,7 +35,7 @@ const ItemCreate = (props) => {
 
     const submitItem = (e) => {
         UploadToAws(selectedFile, url => {
-            console.log(url);
+            console.log(url)
             console.log(title, ExpandAwsUrl(url), quantity, isInfinite, cost, description)
             let data = {
                 name: title,
@@ -46,15 +45,16 @@ const ItemCreate = (props) => {
                 quantity: isInfinite ? 1 : quantity,
                 description: description,
                 isActive: true
-            };
-            if (!props.isBounty) {
-                data.cost = cost;
-            } else {
-                data.award = cost;
-                data.tweetId = -1;
-                data.manual = true;
             }
-            props.registerItem(data);
+            if (!props.isBounty) {
+                data.cost = cost
+            } else {
+                data.award = cost
+                data.tweetId = -1
+                data.manual = true
+            }
+
+            props.registerItem(data)
         })
     }
 
@@ -70,7 +70,7 @@ const ItemCreate = (props) => {
     }
 
     return (
-        <Container fluid="sm">
+        <><Container fluid="sm">
             <Row style={{"justifyContent": "center", "textAlign": "left"}}>
                 <Col md={2}>
                     <Row>
@@ -139,6 +139,7 @@ const ItemCreate = (props) => {
                 </Col>
             </Row>
         </Container>
+        </>
     )
 }
 

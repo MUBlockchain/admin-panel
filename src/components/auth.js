@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import DirectWebSdk from '@toruslabs/torus-direct-web-sdk'
 import { RelayProvider } from '@opengsn/gsn'
 import { ethers as Ethers } from 'ethers'
+const Users = require('../abi/Users.json')
 const PaymasterContract = require('../abi/OrgTokenPaymaster.json')
 const Web3HttpProvider = require( 'web3-providers-http')
 
@@ -28,6 +29,23 @@ export default function UserContextProvider({ children }) {
     if (localStorage.getItem('Public Address') !== null) restoreSession()
   }, [])
 
+  const setUserDetails = async (wallet, etherProvider, userInfo) => {
+    const chainId = wallet.provider._network.chainId
+    const address = Users.networks[chainId].address
+    const contract = new Ethers.Contract(address, Users.abi, wallet)
+    const connectedContract = contract.connect(etherProvider.getSigner(userInfo.publicAddress))
+
+    if (!connectedContract || !userInfo) return -1;
+    const res = await connectedContract.role(userInfo.publicAddress);
+    userInfo.isAdmin = res.toNumber() == 2;
+    
+    if (userInfo.isAdmin) {
+      setUser(userInfo);
+      createSession(userInfo);
+    } else {
+      window.location.replace(`${process.env.GATSBY_BASE_URL}/403`);
+    }
+  }
   // Creates a torus DirectAuth object
   const torus = new DirectWebSdk({
     baseUrl: `${process.env.GATSBY_BASE_URL}/serviceworker/`,
@@ -45,11 +63,12 @@ export default function UserContextProvider({ children }) {
    * @param {*} info User info object
    */
   const createSession = info => {
-    const { publicAddress, privateKey, name, profileImage } = info
+    const { publicAddress, privateKey, name, profileImage, isAdmin } = info
     localStorage.setItem('Public Address', publicAddress)
     localStorage.setItem('Private Key', privateKey)
     localStorage.setItem('Name', name)
     localStorage.setItem('Profile Image', profileImage)
+    localStorage.setItem('isAdmin', isAdmin)
   }
 
   /** 
@@ -60,9 +79,13 @@ export default function UserContextProvider({ children }) {
     const privateKey = localStorage.getItem('Private Key')
     const name = localStorage.getItem('Name')
     const profileImage = localStorage.getItem('Profile Image')
+    const isAdmin = localStorage.getItem('isAdmin') == 'true'
 
+    if (!isAdmin) {
+      logout();
+    }
     // Set new user from data retrived from local storage
-    setUser({ publicAddress, privateKey, name, profileImage })
+    setUser({ publicAddress, privateKey, name, profileImage, isAdmin })
     const {wallet, etherProvider} = await makeProviders(privateKey)
     setEthers(wallet)
     setGSNProvider(etherProvider)
@@ -76,6 +99,7 @@ export default function UserContextProvider({ children }) {
     localStorage.removeItem('Private Key')
     localStorage.removeItem('Name')
     localStorage.removeItem('Profile Image')
+    localStorage.removeItem('isAdmin')
     setUser(null)
   }
 
@@ -98,11 +122,10 @@ export default function UserContextProvider({ children }) {
         
         const { publicAddress, privateKey, userInfo: info } = userInfo
         const { name, profileImage } = info
-        setUser({ publicAddress, privateKey, name, profileImage })
         const { wallet, etherProvider } = await makeProviders(privateKey)
         setEthers(wallet)
         setGSNProvider(etherProvider)
-        createSession({ publicAddress, privateKey, name, profileImage })
+        setUserDetails(wallet, etherProvider, { publicAddress, privateKey, name, profileImage });
       } catch (error) {
         console.log(error)
       } finally {

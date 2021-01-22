@@ -13,6 +13,7 @@ import "./layout.css"
 import MUBCHeader from "./MUBCHeader"
 import '../components/app.css'
 import Navigation from "./navigation"
+import { Toaster } from 'react-hot-toast'
 
 const Layout = ({ children }) => {
   const data = useStaticQuery(graphql`
@@ -31,6 +32,22 @@ const Layout = ({ children }) => {
       <div className="Layout">
         <Navigation />
         <main>{children}</main>
+        <Toaster
+            position="top-right"
+            toastOptions={{
+                loading: {
+                    iconTheme: {
+                        primary: '#047bc4',
+                    }
+                },
+                success: {
+                  duration: 3000,
+                  iconTheme: {
+                    primary: '#289946'
+                  }
+                }
+            }}
+        />
         <footer className="Footer">
           © {new Date().getFullYear()}, Built by Ian Brighton
           {` `}
