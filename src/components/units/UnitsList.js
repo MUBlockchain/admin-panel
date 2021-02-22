@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { Row, Col, Modal, Card, Image, Button } from 'react-bootstrap'
-import { Paper, InputBase } from '@material-ui/core';
+import { Paper, InputBase } from '@material-ui/core'
 import './unit.css'
 
 const Unit = (props) => {
-    const [show, setShow] = useState(false);
-    const handleOpen = () => setShow(true);
-    const handleClose = () => setShow(false);
+    const [show, setShow] = useState(false)
+    const handleOpen = () => setShow(true)
+    const handleClose = () => setShow(false)
 
     return (
         <>
@@ -44,8 +44,8 @@ const Unit = (props) => {
                                     variant="success" 
                                     style={{"marginTop": "15px"}}
                                     onClick={() => { 
-                                        props.handleDelist(props.data?.id, props.pos); 
-                                        handleClose();
+                                        props.handleDelist(props.data?.id, props.pos) 
+                                        handleClose()
                                     }}
                                 >
                                     DELIST
@@ -63,13 +63,13 @@ const Unit = (props) => {
 }
 
 const UnitsList = (props) => {
-    const [ listToDisplay, setListToDisplay ] = useState(props.unitsList);
+    const [ listToDisplay, setListToDisplay ] = useState(props.unitsList)
 
     useEffect(
         () => {
-            setListToDisplay(props.unitsList);
+            setListToDisplay(props.unitsList)
         }, [ props.unitsList ]
-    );
+    )
 
     const displayList = listToDisplay.map((_, i) => 
         {   

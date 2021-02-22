@@ -27,7 +27,7 @@ export const useAnnouncements = () => {
 export const useUsers = () => {
     const { user, ethers, gsnProvider } = useContext(UserContext)
     console.log('Above first return')
-    if(!user || !ethers || !gsnProvider) return null
+    if (!user || !ethers || !gsnProvider) return null
     console.log('Nothing was null')
     const chainId = ethers.provider._network.chainId
     const address = Users.networks[chainId].address

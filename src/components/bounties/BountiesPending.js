@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Row, Col } from 'react-bootstrap'
 import { Paper, InputBase } from '@material-ui/core'
-import toast, { Toaster } from 'react-hot-toast'
+import toast from 'react-hot-toast'
+import LinearLoadingComponent from '../misc/Loading'
 
 const RequestList = (props) => {
-    const [ clickedIndex, setClickedIndex ] = useState(-1);
+    const [ clickedIndex, setClickedIndex ] = useState(-1)
 
     useEffect(
         () => setClickedIndex(-1), [props.requestsList]
-    );
+    )
 
     return <>
         {props.requestsList.map((r, i) => 
@@ -20,8 +21,8 @@ const RequestList = (props) => {
                     "minHeight": "55px"
                 }}
                 onClick={() => {
-                    setClickedIndex(i);
-                    props.onRequestClick(r);
+                    setClickedIndex(i)
+                    props.onRequestClick(r)
                 }}
                 className={i === clickedIndex ? "request-clicked" : "request-item"}
             >
@@ -49,15 +50,15 @@ const RequestDetails = (props) => {
                     <Col sm={6}>
                         <Button 
                             variant="success"
-                            onClick={() => { props.handleAcceptReject(true, props.request?.bounty?.id); }}    
+                            onClick={() => { props.handleAcceptReject(true, props.request?.bounty?.id, props.request?.pos) }}    
                         >
-                            ACCEPT
+                            APPROVE
                         </Button>
                     </Col>
                     <Col sm={6}>
                         <Button 
                             variant="danger"
-                            onClick={() => { props.handleAcceptReject(false, props.request?.bounty?.id); }}    
+                            onClick={() => { props.handleAcceptReject(false, props.request?.bounty?.id, props.request?.pos) }}    
                         >
                             REJECT
                         </Button>
@@ -72,17 +73,20 @@ const RequestDetails = (props) => {
 }
 
 const BountiesPending = (props) => {
-    const [ requestsList, setRequestsList ] = useState([]);
-    const [ requestsToShow, setRequestsToShow ] = useState([]);
-    const [ currentRequest, setCurrentRequest ] = useState(null);
-    const [ bountyId, setBountyId ] = useState(1);
+    const [ requestsList, setRequestsList ] = useState([])
+    const [ requestsToShow, setRequestsToShow ] = useState([])
+    const [ currentRequest, setCurrentRequest ] = useState(null)
+    const [ bountyId, setBountyId ] = useState(1)
+    const [ fetching, setFetching ] = useState(true)
 
     const getBountyReqs = async () => {
-        if (!props.contract) return;
-        const res = await props.contract.pendingBountyRequests(1);
-        let req = [];
+        if (!props.contract) return
+        setFetching(true)
+        const res = await props.contract.pendingBountyRequests(1)
+        let req = []
         for (let i = 0; i < res._nonce.toNumber(); i++) {
             req.push({
+                pos: i,
                 bounty: {
                     id: res._bounties[i].toNumber(),
                     name: res._bountyNames[i],
@@ -97,104 +101,93 @@ const BountiesPending = (props) => {
                 }
             })
         }
-        setRequestsList(req);
-        setRequestsToShow(req);
+        setRequestsList(req)
+        setRequestsToShow(req)
+        setFetching(false)
     }
 
     const handleRequestClick = (req) => {
-        setCurrentRequest(req);
+        setCurrentRequest(req)
     }
 
-    const handleAcceptReject = async (isAccept, bountyId) => {
-        if (!props.contract) return;
+    const handleAcceptReject = async (isAccept, bountyId, pos) => {
+        if (!props.contract) return
         if (!bountyId) {
-            console.error('No bounty Id provided');
+            console.error('No bounty Id provided')
             return
         }
-        const loadingToast = toast.loading(
-            <span>Processing...</span>
-        );
-        try {
-            let tx;
-            if (isAccept) {
-                tx = await props.contract.approveBountyRequest(1, bountyId);
-            } else {
-                tx = await props.contract.rejectBountyRequest(1, bountyId);
+        toast.promise(
+            isAccept ? props.contract.approveBountyRequest(1, bountyId) : props.contract.rejectBountyRequest(1, bountyId),
+            {
+                loading: <span>Processing...</span>,
+                success: m => {
+                    requestsList.splice(pos, 1)
+                    setRequestsToShow(requestsToShow.filter(r => r.pos !== pos))
+                    if (currentRequest.pos === pos) setCurrentRequest(null)
+                    return (<span>Pending request {isAccept ? 'approved' : 'rejected'}!</span>)
+                },
+                error: e => {
+                    console.error(e)
+                    return (<span>Oops! An error has occurred...</span>)
+                }
             }
-            
-            const receipt = await tx.wait();
-            toast.remove(loadingToast);
-            toast.success(<span>Pending request {isAccept ? 'accepted' : 'rejected'}!</span>, {
-                duration: 5000
-            });
-            setTimeout(window.location.reload, 2000);
-        } catch (error) {
-            toast.remove(loadingToast);
-            toast.error(<span>An error has occurred. Please try again later.</span>);
-            console.log(error);
-        }
+        )
     }
 
     useEffect(() => {
-        getBountyReqs();
-    }, []); 
+        getBountyReqs()
+    }, []) 
 
     const handleBountyApply = async () => {
-        if (!props.contract) return;
-        const tx = await props.contract.applyForBounty(bountyId);
-        console.log(tx);
+        if (!props.contract) return
+        const tx = await props.contract.applyForBounty(bountyId)
+        console.log(tx)
     }
 
     return <>
-        <Paper component="form" style={{ "margin": "auto", "marginTop":"15px", "width": "80%" }}>
-            <Row>
-                <InputBase
-                    placeholder="Search by username..."
-                    inputProps={{ 'aria-label': 'search by title' }}
-                    style={{ "fontSize": "15px", "fontFamily": "georgia, serif", "width": "90%", 
-                    "paddingLeft": "5px", "margin": "0px 20px 0px 20px" }} 
-                    onChange={(event) => {
-                        setRequestsToShow(
-                            requestsList.filter(
-                                r => r.user.name.toLowerCase().includes(event.target.value.toLowerCase())
-                            )
-                        );
-                        setCurrentRequest(null);
-                    }}/>
-                
-            </Row>
-        </Paper>
+        {fetching 
+            ? <LinearLoadingComponent text="Fetching data..." />
+            : <><Paper component="form" style={{ "margin": "auto", "marginTop":"15px", "width": "80%" }}>
+                    <Row>
+                        <InputBase
+                            placeholder="Search by username..."
+                            inputProps={{ 'aria-label': 'search by title' }}
+                            style={{ "fontSize": "15px", "fontFamily": "georgia, serif", "width": "90%", 
+                            "paddingLeft": "5px", "margin": "0px 20px 0px 20px" }} 
+                            onChange={(event) => {
+                                setRequestsToShow(
+                                    requestsList.filter(
+                                        r => r.user.name.toLowerCase().includes(event.target.value.toLowerCase())
+                                    )
+                                )
+                                setCurrentRequest(null)
+                            }}/>
+                        
+                    </Row>
+                </Paper>
 
-        <InputBase 
-            placeholder="Bounty id to apply" 
-            type="number" 
-            onChange= {(e) => {
-                setBountyId(e.target.value)
-            }} />
-        <Button
-            onClick= {() => {handleBountyApply(); }}
-        > Apply for bounty</Button>
+                <InputBase 
+                    placeholder="Bounty id to apply" 
+                    type="number" 
+                    onChange= {(e) => {
+                        setBountyId(e.target.value)
+                    }} />
+                <Button
+                    onClick= {() => {handleBountyApply() }}
+                > Apply for bounty</Button>
 
-        <div style={{"margin": "20px"}}>
-            <Row>
-                <Col md={5} style={{"maxHeight": "250px"}} className="overflow-auto">
-                    <RequestList requestsList={requestsToShow} onRequestClick={handleRequestClick}/>
-                </Col>
-                <Col md={7} style={{"maxHeight": "250px"}}>
-                    <RequestDetails request={currentRequest} handleAcceptReject={handleAcceptReject}/>
-                </Col>
-            </Row>
-        </div>
-        <Toaster
-            position="top-right"
-            toastOptions={{
-                loading: {
-                    iconTheme: {
-                        primary: '#42ad5d',
-                    }
-                }
-            }}
-        />
+                <div style={{"margin": "20px"}}>
+                    <Row>
+                        <Col md={5} style={{"maxHeight": "250px"}} className="overflow-auto">
+                            <RequestList requestsList={requestsToShow} onRequestClick={handleRequestClick}/>
+                        </Col>
+                        <Col md={7} style={{"maxHeight": "250px"}}>
+                            <RequestDetails request={currentRequest} handleAcceptReject={handleAcceptReject}/>
+                        </Col>
+                    </Row>
+                </div>
+            </>
+        }
     </>
 }
 
